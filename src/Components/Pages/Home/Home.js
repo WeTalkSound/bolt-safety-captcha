@@ -2,12 +2,49 @@ import React, { useState, useLayoutEffect } from 'react'
 import { saveAs } from 'file-saver';
 import Button from '../../Utilities/Button/Button'
 import bolt_logo from './bolt_logo_light.png'
+import boltApp from './bolt-app.png'
+import secure from './secure.png'
+import supported from './supported.png'
+import verified from './verified.png'
+import car1 from './cars/1.png'
+import car2 from './cars/2.png'
+import car3 from './cars/3.png'
+import car4 from './cars/4.png'
+import car5 from './cars/5.png'
+import car6 from './cars/6.png'
+import car7 from './cars/7.png'
+import car8 from './cars/8.png'
+import car9 from './cars/9.png'
+import car10 from './cars/10.png'
+import car11 from './cars/11.png'
+import car12 from './cars/12.png'
+import car13 from './cars/13.png'
+import car14 from './cars/14.png'
+import car15 from './cars/15.png'
+import car16 from './cars/16.png'
+import driver1 from './drivers/1.png'
+import driver2 from './drivers/2.png'
+import driver3 from './drivers/3.png'
+import driver4 from './drivers/4.png'
+import driver5 from './drivers/5.png'
+import driver6 from './drivers/6.png'
+import driver7 from './drivers/7.png'
+import driver8 from './drivers/8.png'
+import driver9 from './drivers/9.png'
+import driver10 from './drivers/10.png'
+import driver11 from './drivers/11.png'
+import driver12 from './drivers/12.png'
+import driver13 from './drivers/13.png'
+import driver14 from './drivers/14.png'
+import driver15 from './drivers/15.png'
+import driver16 from './drivers/16.png'
 
 export default function Home() {
   const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG"})
   const [ status,setStatus ] = useState("INITIAL")
   const [ error,setError ] = useState("")
   const [ image,setImage ] = useState("")
+  const [ car,setCar ] = useState(-1)
   const [ file,setFile ] = useState(new Blob())
   const [ gratitude,setGratitude ] = useState("")
 
@@ -154,7 +191,7 @@ export default function Home() {
   const btnChecked = (e) => {
     if(e.target.checked) {
       let category = e.target.name
-      setGratitude(`${category}&${Math.floor(Math.random() * GratitudeQuotes[category].length)}`)
+      // setGratitude(`${category}&${Math.floor(Math.random() * GratitudeQuotes[category].length)}`)
       setStatus("IMAGE")
     }
   }
@@ -163,146 +200,55 @@ export default function Home() {
     saveAs(image, `grateful-for-every-mile-${Date.now().toString(16)}.png`)
   }
 
-  const GratitudeQuotes = {
-      "Life": [
-          "Thankful to Not have COVID",
-          "Thankful to Be alive",
-          "Thankful for The gift of a new day",
-          "Thankful for Birthdays",
-          "Grateful to Not have to go to the clinic",
-          "Grateful for Paid healthcare",
-          "Thankful for Healthcare Workers",
-          "Thankful for Home Workouts",
-          "Thankful for Face Masks",
-          "Grateful for The Chance To Slow Down",
-          "Grateful for Early Morning Walks",
-          "Grateful for A Safe Home",
-          "Thankful for Life and Hope",
-          "Grateful for Good Weather",
-          "Thankful for Health",
-          "Grateful for Reasons to Smile",
-          "Grateful for Restful Sleep" 
-      ],
-      "Funds": [
-          "Thankful that I can take care of family",
-          "Happy that I can afford my cravings",
-          "Happy that I can sponsor my lifestyle",
-          "Grateful that I can help people in need",
-          "Thankful that Santorini is in my future",
-          "Thankful for The stamps in my passport",
-          "Grateful to Have Money Saved Up",
-          "Grateful that My Money Grows Like grass",
-          "Thankful that The Grass Is Green On My Side",
-          "Grateful that Money Stops Nonsense",
-          "Grateful for Fat Wallets",
-          "Grateful to Not Have To Look At The Price Tag",
-          "Grateful to Be Able To Spend and Save",
-          "Grateful for Debit Cards That Work Like Black Cards",
-          "Thankful for Online Giveaways"
-      ],
-      "Family": [
-          "Grateful for My Support System",
-          "Grateful that I'm My Best Friend’s Best Friend!",
-          "Happy that I Can Text My Friend At Midnight With Gossip",
-          "Thankful for A Roof Over My Head",
-          "Happy for Gossip Partners",
-          "Happy that My Friends Are No Longer Choosing Toxic People",
-          "Grateful for Selfie Partners",
-          "Thankful for Great Memories",
-          "Grateful for The Absence of Entanglements",
-          "Thankful to Have People To Say “I love you” To",
-          "Grateful for The Family I Got To Choose",
-          "Grateful for Day One’s and the New One’s",
-          "Thankful for People To Lean On",
-          "Thankful for Family Bonding Time",
-          "Thankful for Supportive Friends",
-          "Grateful for the phone calls that end with “I love you”",
-          "Grateful for friendly banter",
-          "Grateful to be a listening ear to my friends and family",
-          "Happy that I can wake up to leftover meals",
-          "Grateful for people to listen to my rants",
-          "Thankful for breakfast in bed",
-          "Grateful for my crew",
-          "Grateful for friends that mind my business",
-          "Grateful to have someone to share my life with",
-          "Grateful for friends that tell me the truth",
-          "Thankful for family that check in on me",
-          "Thankful for laughter"
-      ],
-      "Career": [
-          "Grateful that I can do giveaways",
-          "Thankful for having a fighting spirit",
-          "Thankful for having a reason to get up in the mornings",
-          "Grateful to be an employer of labour",
-          "Thankful to still have my business",
-          "Grateful for promotions",
-          "Thankful for new opportunities",
-          "Thankful for end of month credit alerts",
-          "Grateful for credit alerts",
-          "Grateful for daily safe travels",
-          "Thankful for Fridays at the end of a hectic week",
-          "Grateful to be able to hear “How was your weekend?”",
-          "Grateful to be able to hand out business cards",
-          "Grateful for good colleagues",
-          "Thankful for competition that pushes me to be better",
-          "Happy to be able to pay my bills",
-          "Thankful that my bills and income are in the same weight class",
-          "Thankful to be booked and busy",
-          "Grateful for remote work",
-          "Grateful for people who believe in me",
-          "Thankful for career mentors"
-      ],
-      "Growth": [
-          "Grateful that I have a degree",
-          "Grateful for online classes",
-          "Thankful for new skill sets",
-          "Grateful for hobbies that turn into income",
-          "Grateful for self-help resources",
-          "Grateful to have started something new",
-          "Thankful for new opportunities ",
-          "Thankful for communities that push you to be better",
-          "Grateful that learning is never wasted",
-          "Thankful for experiences that teach",
-          "Thankful for resolutions that stick",
-          "Grateful for the teachers in my life",
-          "Grateful for mentors",
-          "Thankful for study groups",
-          "Grateful for new learnings"
-      ],
-      "Uche": [
-          "Thankful that Uche stays consistent",
-          "Thankful for the promo codes from Uche",
-          "Thankful for at least one person who respects text, don’t call",
-          "Grateful for emails from Uche",
-          "Thankful that Uche from Bolt never forgets me",
-          "Grateful for affordable rides",
-          "Grateful that Uche saves me money",
-          "Thankful for future promo codes",
-          "Thankful for five star drivers",
-          "Thankful for drivers that pass the aux",
-          "Grateful to be able to share my journeys with friends",
-          "Grateful for rides that are tracked",
-          "Thankful that Uche respects text, don’t call"
-      ],
-      "Good": [
-          "Grateful that I don’t need designer to look designer",
-          "Grateful for glowing skin",
-          "Thankful that I’m comfortable in my own skin",
-          "Grateful for looks that cannot be masked",
-          "Grateful for good looks",
-          "Grateful to be securing myself, because I’m the bag",
-          "Grateful for my drip",
-          "Grateful for more time to show off my style",
-          "Thankful that I slay with my looks",
-          "Excited to not need these filters",
-          "Grateful for filters",
-          "Thankful that “I woke up like this!”",
-          "Grateful for looks that turn heads",
-          "Grateful for a body that doesn’t quit",
-          "Grateful for my six pack",
-          "Thankful for eye brows on fleek"
-      ],
-    };
+  const submitDriver = (e) => {
+    e.preventDefault()
+    setCar(e.target.car.value)
+    setStatus("SECOND")
+  }
+
+  const submitCar = (e) => {
+    e.preventDefault()
+    setCar(parseInt(e.target.car.value))
+    setStatus("FIRST-B")
+  }
+
+  const CARS = [
+    car1,
+    car2,
+    car3,
+    car4,
+    car5,
+    car6,
+    car7,
+    car8,
+    car9,
+    car10,
+    car11,
+    car12,
+    car13,
+    car14,
+    car15,
+    car16
+  ]
+
+  const DRIVERS = [
+    driver1,
+    driver2,
+    driver3,
+    driver4,
+    driver5,
+    driver6,
+    driver7,
+    driver8,
+    driver9,
+    driver10,
+    driver11,
+    driver12,
+    driver13,
+    driver14,
+    driver15,
+    driver16
+  ]
 
   const Layout = ({children, ...props}) => (
     <div 
@@ -330,7 +276,7 @@ export default function Home() {
       <div className="row text-left">
         <div className="col-4 landing-col">
           <div>
-            <img src="https://placehold.it/500x500" className="img-fluid img-round landing-img" alt="" />
+            <img src={verified} className="img-fluid img-round landing-img" alt="" />
             <div className="landing-text">
               <span className="landing-label">Verified</span>
               <h1 className="landing-h1 font-weight-bold">BEFORE</h1>
@@ -339,7 +285,7 @@ export default function Home() {
         </div>
         <div className="col-4 landing-col">
           <div>
-            <img src="https://placehold.it/500x500" className="img-fluid img-round landing-img" alt="" />
+            <img src={secure} className="img-fluid img-round landing-img" alt="" />
             <div className="landing-text">
               <span className="landing-label">Secure</span>
               <h1 className="landing-h1 font-weight-bold">DURING</h1>
@@ -348,9 +294,9 @@ export default function Home() {
         </div>
         <div className="col-4 landing-col">
           <div>
-            <img src="https://placehold.it/500x500" className="img-fluid img-round landing-img" alt="" />
+            <img src={supported} className="img-fluid img-round landing-img" alt="" />
             <div className="">
-              <span className="landing-label">Support</span>
+              <span className="landing-label">Supported</span>
               <h1 className="landing-h1 font-weight-bold">AFTER</h1>
             </div>
           </div>
@@ -365,69 +311,101 @@ export default function Home() {
         CAPTCHAs as possible?
       </p>
       <button className="btn btn-primary" onClick={(e) => setStatus("FIRST")}>Get started</button>
-      {/* <h1 className="font-weight-bold">
-        Tell us what you're most grateful for 
-        to unlock your Gratitude poster
-      </h1>
-      <div className="form-group">
-        
-        <label className="checkbtn bg-primary-light">Life &amp; Health
-          <input type="checkbox" name="Life" onChange={btnChecked}  />
-          <span className="checkmark"></span>
-        </label>
-        <label className="checkbtn bg-primary-light">Funds
-          <input type="checkbox" name="Funds" onChange={btnChecked}  />
-          <span className="checkmark"></span>
-        </label>
-        <label className="checkbtn bg-primary-light">Family &amp; Friends
-          <input type="checkbox" name="Family" onChange={btnChecked}  />
-          <span className="checkmark"></span>
-        </label>
-      </div>
-      <div className="form-group">
-        <label className="checkbtn">Career
-          <input type="checkbox" name="Career" onChange={btnChecked}  />
-          <span className="checkmark"></span>
-        </label>
-        <label className="checkbtn">Growth
-          <input type="checkbox" name="Growth" onChange={btnChecked}  />
-          <span className="checkmark"></span>
-        </label>
-        <label className="checkbtn">{geo.name} from Bolt
-          <input type="checkbox" name="Uche" onChange={btnChecked}  />
-          <span className="checkmark"></span>
-        </label>
-        <label className="checkbtn">Good Looks
-          <input type="checkbox" name="Good" onChange={btnChecked}  />
-          <span className="checkmark"></span>
-        </label>
-      </div>
-     */}
     </Layout>
   )
 
   const FirstQuestion = () => (
     <Layout>
-      <h1 className="question-number">1</h1>
-      <h1>Your ride is here!</h1>
-      <div className="form-group">
-        <input type="range" step="1" min="0" defaultValue="0" max="10" className="custom-range" id="formControlRange" />
-        <div className="row range-indicators">
-          <div style={{textAlign:"left"}} className="col">0</div>
-          <div className="col">1</div>
-          <div className="col">2</div>
-          <div className="col">3</div>
-          <div className="col">4</div>
-          <div className="col">5</div>
-          <div className="col">6</div>
-          <div className="col">7</div>
-          <div className="col">8</div>
-          <div className="col">9</div>
-          <div style={{textAlign:"right"}} className="col">10</div>
+      <h1 className="question-number">1</h1> 
+      <h1 className="question-text">
+        Your ride is here!
+      </h1>
+
+      <div className="row">
+        <div className="col-md-6">
+          <img src={boltApp} className="img-fluid" alt="Your bolt ride" />
         </div>
-        <button className="btn btn-primary" onClick={(e) => setStatus("IMAGE")}>Let's Go!</button>
-        <button className="btn btn-primary" onClick={(e) => setStatus("INITIAL")}>Back</button>
+        <div className="col-md-6">
+          <h5>A. Find your driver's car</h5>
+          <form onSubmit={submitCar}>
+            <div className="row no-gutters">
+            {
+              CARS.map((car, key) => (
+                <div key={key} className="col-3">
+                  <label className="pic-select-label check">
+                    <img src={car} className="img-fluid" alt="" />
+                    <input type="radio" name="car" value={key} required />
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
+              ))
+            }
+              <button className="btn btn-primary" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
       </div>
+      
+    </Layout>
+  )
+
+  const FirstQuestionB = () => (
+    <Layout>
+      <h1 className="question-number">1</h1> 
+      <h1 className="question-text">
+        Your ride is here!
+      </h1>
+
+      <div className="row">
+        <div className="col-md-6">
+          <img src={boltApp} className="img-fluid" alt="Your bolt ride" />
+        </div>
+        <div className="col-md-6">
+          <h5>A. Find your driver</h5>
+          <form onSubmit={submitDriver}>
+            <div className="row no-gutters">
+            {
+              DRIVERS.map((car, key) => (
+                <div key={key} className="col-3">
+                  <label className="pic-select-label check">
+                    <img src={car} className="img-fluid" alt="" />
+                    <input type="radio" name="car" value={key} required />
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
+              ))
+            }
+              <button className="btn btn-primary" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+    </Layout>
+  )
+
+  const SecondQuestion = () => (
+    <Layout>
+      <h1 className="question-number">2</h1> 
+      <h1 className="question-text">
+        Your trip has begun.
+      </h1>
+
+      <div className="row">
+        <div className="col-12">
+          <h5>Take your loved ones with you on your journey.</h5>
+          <h5>Unscramble the letters to find out how:</h5>
+          <form onSubmit={submitCar}>
+            <div className="row">
+              <div className="col-12">
+                <input type="text" name="unscramble" placeholder="Type phrase here" required />
+              </div>
+              <button className="btn btn-primary" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
     </Layout>
   )
 
@@ -437,7 +415,7 @@ export default function Home() {
     <Layout middle>
       <h1>
         You are <br/>
-        <span className="primary-text font-weight-bold">"{GratitudeQuotes[category][quoteIndex].replace('Uche', geo.name)}"</span>
+        {/* <span className="primary-text font-weight-bold">"{GratitudeQuotes[category][quoteIndex].replace('Uche', geo.name)}"</span> */}
       </h1>
       <p>
         Upload a picture to download your result. <br/>
@@ -512,6 +490,14 @@ export default function Home() {
     
     case "FIRST":
       content = <FirstQuestion />
+      break;
+    
+    case "FIRST-B":
+      content = <FirstQuestionB />
+      break;
+    
+    case "SECOND":
+      content = <SecondQuestion />
       break;
     
     case "IMAGE":

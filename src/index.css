@@ -91,6 +91,16 @@ a:hover a:active {
   line-height: 30px;
   border: solid 5px var(--primary-color);
   border-radius: 50%;
+  display: block;
+}
+
+.question-text {
+  text-align: left;
+  padding-left: 40px;
+}
+
+.pic-select-label {
+  margin: 0;
 }
 
 @media (max-width: 425px) {
@@ -151,7 +161,7 @@ a:hover a:active {
 }
 
 /* Hide the browser's default checkbox */
-.checkbtn input {
+.check input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -164,18 +174,19 @@ a:hover a:active {
   position: absolute;
   top: 0;
   left: 0;
-  height: 5px;
-  width: 5px;
+  height: 15px;
+  width: 15px;
+  border-radius: 15px;
 }
 
 /* On mouse-over, add a grey background color */
-.checkbtn:hover input ~ .checkmark {
+.check:hover input ~ .checkmark {
   /* background-color: #ccc; */
 }
 
 /* When the checkbox is checked, add a blue background */
-.checkbtn input:checked ~ .checkmark {
-  /* background-color: var(--primary-color); */
+.check input:checked ~ .checkmark {
+  background-color: var(--primary-color);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -186,12 +197,12 @@ a:hover a:active {
 }
 
 /* Show the checkmark when checked */
-.checkbtn input:checked ~ .checkmark:after {
+.check input:checked ~ .checkmark:after {
   display: block;
 }
 
 /* Style the checkmark/indicator */
-.checkbtn .checkmark:after {
+.check .checkmark:after {
   left: 6px;
   top: 2px;
   width: 5px;

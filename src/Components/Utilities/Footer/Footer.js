@@ -1,8 +1,6 @@
 import React from 'react'
 import appStoreImg from "./app-store.png"
 import playStoreImg from "./play-store.png"
-import homeImage from './home-image.png'
-import homeImageMobile from './rsz_home-imageold9f525284.png'
 
 export default function Footer() {
   return (
