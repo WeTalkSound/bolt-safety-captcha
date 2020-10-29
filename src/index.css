@@ -1,13 +1,321 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root {
+  --primary-font: 'Open Sans', sans-serif;
+  --secondary-font: 'Poppins', sans-serif;
+  --primary-color: #5fd387;
+  --primary-light: #a9d9bf;
+  --primary-dark: #1d915c;
+  --primary-color-transparent: rgba(95, 211, 135, .25);
+  --secondary-color: #ffffff;
+  --danger: #ff0062;
+  --black: #000;
+  --dark-grey: #333333;
+  --shadow: 3px 3px 10px #ddd;
+  --space: 30px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: var(--secondary-font);
+  background-color: var(--secondary-color);
+  background-size: cover;
+  background-repeat: repeat;
+  color: #232323;
+  margin: 8px 4px 0 4px;
+  padding-bottom: 120px;
+  padding-top: 70px;
+}
+
+a {
+  color: var(--primary-color);
+}
+
+a:hover a:active {
+  color: var(--primary-color);
+}
+
+.primary-text {
+  color: var(--primary-color);
+}
+
+.firstcon {
+  padding: 0 12% 2% 12%;
+}
+
+.form-control {
+  border-radius: var(--space);
+  text-align: center;
+  width:85%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form-control:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: var(--primary-color);
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem var(--primary-color-transparent);
+}
+
+.form-group {
+  margin: 0;
+}
+
+.landing-col {
+  display: flex;
+  justify-content: center;
+}
+
+.landing-img {
+  max-width: 100px;
+  border-radius: 50%;
+  display: block;
+  margin: 0;
+}
+
+.landing-text {
+  border-right: solid 1px var(--primary-color);
+}
+
+.landing-label {
+  padding: 0 30px 0 10px;
+  background-color: var(--primary-color);
+  color: var(--black);
+  border-radius: 15px;
+}
+
+.question-number {
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 30px;
+  border: solid 5px var(--primary-color);
+  border-radius: 50%;
+}
+
+@media (max-width: 425px) {
+  .landing-col {
+    padding-left: 0;
+  }
+
+  .landing-img {
+    width: 40px;
+  }
+
+  .landing-label {
+    padding: 0 8px 0 5px;
+    font-size: 10px;
+  }
+
+  .landing-h1 {
+    font-size: 17px;
+  }
+}
+
+/* Customize the label (the checkbtn) */
+.checkbtn {
+  display: inline-flex;
+  position: relative;
+  padding: 7px 15px;
+  margin-bottom: 12px;
+  margin-right: 15px;
+  cursor: pointer;
+  justify-content: center;
+  font-weight: 700;
+  -webkit-user-select: none;
+  user-select: none;
+  background: var(--primary-color);
+  border-radius: 30px;
+}
+
+@media (min-width: 426px) {
+  .checkbtn  {
+    width: 200px;
+  }
+}
+
+@media (max-width: 425px) {
+  .checkbtn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 425px) {
+  .checkbtn {
+    font-size: 10px;
+  }
+}
+
+.checkbtn.bg-primary-light {
+  background: var(--primary-light);
+}
+
+/* Hide the browser's default checkbox */
+.checkbtn input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 5px;
+  width: 5px;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbtn:hover input ~ .checkmark {
+  /* background-color: #ccc; */
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkbtn input:checked ~ .checkmark {
+  /* background-color: var(--primary-color); */
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbtn input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbtn .checkmark:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #000;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.takequizbtn {
+  width: 310px;
+}
+
+.crop-container {
+  position: relative;
+  /* bottom: -81px; */
+  width: 100%;
+  min-height: 500px;
+}
+
+@media (max-width: 1024px) {
+  .takequizbtn {
+    width: 200px;
+  }
+}
+
+h1 {
+  font-size: 24px;
+}
+
+p {
+  font-size: 15px;
+  padding-top: 1%;
+}
+
+@media (max-width: 1024px) {
+  p {
+    font-size: 14px;
+  }
+}
+
+li {
+  padding-top: 5px;
+  text-align: left;
+}
+
+ ul {
+   text-align: left;
+ }
+
+.btn-sm {
+  background-color: #34d058;
+  color: white;
+}
+
+.footer {
+  display: inline-block;
+  text-align: left;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  position: fixed;
+  color: black;
+  background-color: var(--primary-light);
+  padding: 20px 0;
+}
+
+.footerbtns {
+  text-align: right;
+  float: right;
+  margin-right: 5%;
+}
+
+.footertext {
+  font-size: 18px;
+  float: left;
+  margin-left: 5%;
+}
+
+img.homeimage {
+  position: fixed;
+  z-index: -1;
+  bottom: 70px;
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 767px) {
+  body {
+    background-repeat: no-repeat;
+  }
+
+  .footer {
+    text-align: center;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    position: fixed;
+    color: black;
+    background-color: #34d186;
+    padding: 5% 0;
+  }
+
+  img.homeimage {
+    max-height: 100px;
+    position: fixed;
+    bottom: 85px;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .footerbtns {
+    text-align: center;
+    float: none;
+    margin-bottom: 4%;
+    margin: 0;
+  }
+
+  .footertext {
+    display:inline-block;
+    width: 240px;
+    float: none;
+    margin: 0 0;
+  }
 }
