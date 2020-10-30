@@ -1,7 +1,6 @@
 import React, { useState, useLayoutEffect } from 'react'
 import { saveAs } from 'file-saver';
 import Button from '../../Utilities/Button/Button'
-import bolt_logo from './bolt_logo_light.png'
 import boltApp from './bolt-app.png'
 import secure from './secure.png'
 import supported from './supported.png'
@@ -45,7 +44,6 @@ export default function Home() {
   const [ error,setError ] = useState("")
   const [ image,setImage ] = useState("")
   const [ car,setCar ] = useState(-1)
-  const [ file,setFile ] = useState(new Blob())
 
   console.log(geo);
   console.log(car);
@@ -61,87 +59,6 @@ export default function Home() {
         setGeo(data)
       })
   }, [])
-
-  const submit = () => {
-    console.log("File triggered")
-    if (!gratitude.length) {
-      setError("Please select something you're grateful for.")
-      return
-    }
-    if (!file) {
-      setError("Please upload an image.")
-      return
-    }
-    setStatus("UPLOADING")
-    const formData = new FormData()
-
-    formData.append("image", file)
-
-    console.log(formData, formData.toString())
-
-    let [category, quoteIndex] = gratitude.split('&')
-
-    fetch(`https://services.etin.space/bolt-campaign/api/gratitude/?gratefulFor=${category}&quoteIndex=${quoteIndex}`, {
-      method: 'POST',
-      body: formData
-    })
-      .then(res => {
-        return res.blob()
-      })
-      .then(images => {
-
-        let image = new Image()
-
-        let imageUrl = (URL.createObjectURL(images))
-        image.src = imageUrl
-
-        image.onload = () => {
-          let canvas = document.createElement('canvas')
-          canvas.width = image.width
-          canvas.height = image.height
-
-          canvas.getContext('2d').fillRect(0, 0, image.width, image.height)
-          canvas.getContext('2d').drawImage(image, 0, 0)
-
-          let icon = new Image()
-          // icon.src = "http://services.etin.space/bolt-campaign/api/gratitude/logo.php"
-          icon.src = bolt_logo
-          // icon.crossOrigin = "anonymous"
-
-          icon.onload = () => {
-            let 
-              iconCanvas = document.createElement('canvas'), 
-              max_size = image.width > image.height ?  image.width * 0.1 : image.height * 0.1,
-              width = icon.width,
-              height = icon.height
-
-            if (width > max_size) {
-              height *= max_size / width
-              width = max_size
-            }
-
-            console.log(image.width, image.height, image.width * image.height, max_size)
-            
-            iconCanvas.width = width
-            iconCanvas.height = height
-            iconCanvas.getContext('2d').drawImage(icon, 0, 0, width, height)
-
-            canvas.getContext('2d').drawImage(iconCanvas, image.width/20, image.height - (image.height/10))
-            
-            canvas.toBlob(blob => {
-              console.log("To Blob")
-              console.log(blob)
-              setImage(URL.createObjectURL(blob))
-              setStatus("LOADED")
-            })
-          }
-
-        }
-      })
-  }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useLayoutEffect(submit, [file])
 
   const onUpload = e => {
     const file = Array.from(e.target.files)[0]
@@ -177,7 +94,6 @@ export default function Home() {
           canvas.toBlob(blob => {
             setImage(URL.createObjectURL(blob))
             // setStatus("CROP")
-            setFile(blob)
           })
         }
         image.src = readerEvent.target.result;
