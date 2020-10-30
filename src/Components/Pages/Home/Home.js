@@ -46,7 +46,9 @@ export default function Home() {
   const [ image,setImage ] = useState("")
   const [ car,setCar ] = useState(-1)
   const [ file,setFile ] = useState(new Blob())
-  const [ gratitude,setGratitude ] = useState("")
+
+  console.log(geo);
+  console.log(car);
 
   useLayoutEffect(() => {
     fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
@@ -138,6 +140,7 @@ export default function Home() {
       })
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useLayoutEffect(submit, [file])
 
   const onUpload = e => {
@@ -188,13 +191,13 @@ export default function Home() {
     }
   }
 
-  const btnChecked = (e) => {
-    if(e.target.checked) {
-      let category = e.target.name
-      // setGratitude(`${category}&${Math.floor(Math.random() * GratitudeQuotes[category].length)}`)
-      setStatus("IMAGE")
-    }
-  }
+  // const btnChecked = (e) => {
+  //   if(e.target.checked) {
+  //     let category = e.target.name
+  //     // setGratitude(`${category}&${Math.floor(Math.random() * GratitudeQuotes[category].length)}`)
+  //     setStatus("IMAGE")
+  //   }
+  // }
 
   const saveImage = () => {
     saveAs(image, `grateful-for-every-mile-${Date.now().toString(16)}.png`)
@@ -410,7 +413,7 @@ export default function Home() {
   )
 
   const GratitudeImageUpload = () => {
-    let [category, quoteIndex] = gratitude.split('&')
+    // let [category, quoteIndex] = gratitude.split('&')
     return (
     <Layout middle>
       <h1>
