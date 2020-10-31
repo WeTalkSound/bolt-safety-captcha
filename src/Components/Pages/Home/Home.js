@@ -310,14 +310,15 @@ export default function Home() {
         Your trip has begun.
       </h1>
 
-      <div className="row">
+      <div className="row text-left">
         <div className="col-12">
           <h5>Take your loved ones with you on your journey.</h5>
           <h5>Unscramble the letters to find out how:</h5>
+          <h1 className="scrambled-letters"><span>R</span><span>E</span><span>S</span><span>H</span><span>A</span> <span>R</span><span>U</span><span>Y</span><span>O</span> <span>E</span><span>A</span><span>T</span></h1>
           <form onSubmit={submitCar}>
             <div className="row">
               <div className="col-12">
-                <input type="text" name="unscramble" placeholder="Type phrase here" required />
+                <input type="text" name="unscramble" className="form-control" placeholder="Type phrase here" required />
               </div>
               <button className="btn btn-primary" type="submit">Submit</button>
             </div>

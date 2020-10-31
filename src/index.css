@@ -43,9 +43,6 @@ a:hover a:active {
 .form-control {
   border-radius: var(--space);
   text-align: center;
-  width:85%;
-  max-width: 500px;
-  margin: 0 auto;
 }
 
 .form-control:focus {
@@ -103,6 +100,13 @@ a:hover a:active {
   margin: 0;
 }
 
+.scrambled-letters span {
+  text-align: center;
+  border: solid 3px var(--primary-color);
+  padding: 5px 15px;
+  margin: 10px;
+  line-height: 65px;
+}
 @media (max-width: 425px) {
   .landing-col {
     padding-left: 0;
