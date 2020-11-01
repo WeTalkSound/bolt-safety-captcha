@@ -1,6 +1,5 @@
 import React, { useState, useLayoutEffect } from 'react'
 import { saveAs } from 'file-saver';
-import Button from '../../Utilities/Button/Button'
 import boltApp from './bolt-app.png'
 import secure from './secure.png'
 import supported from './supported.png'
@@ -37,13 +36,24 @@ import driver13 from './drivers/13.png'
 import driver14 from './drivers/14.png'
 import driver15 from './drivers/15.png'
 import driver16 from './drivers/16.png'
+import accident from './sos/accident.png'
+import danger from './sos/danger.png'
+import music from './sos/music.png'
+import price from './sos/price.png'
+import traffic from './sos/traffic.png'
 
 export default function Home() {
   const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG"})
   const [ status,setStatus ] = useState("INITIAL")
-  const [ error,setError ] = useState("")
+  // const [ error,setError ] = useState("")
   const [ image,setImage ] = useState("")
   const [ car,setCar ] = useState(-1)
+  const [ driver,setDriver ] = useState(-1)
+  const [ unscrambled,setUnscrambled ] = useState("")
+  const [ SOS,setSOS ] = useState([])
+  const [ fourth, setFourth ] = useState(-1)
+  const [ fifth, setFifth ] = useState(-1)
+  const [ feedbackOrder, setFeedbackOrder ] = useState(-1)
 
   console.log(geo);
   console.log(car);
@@ -60,68 +70,13 @@ export default function Home() {
       })
   }, [])
 
-  const onUpload = e => {
-    const file = Array.from(e.target.files)[0]
-
-    console.log(file.type.match(/image.*/))
-
-    if( file.type.match(/image.*/) ) {
-      let reader = new FileReader()
-      reader.onload = readerEvent => {
-        let image = new Image()
-        image.onload = imageEvent => {
-          let 
-            canvas = document.createElement('canvas'), 
-            max_size = 1024,
-            width = image.width,
-            height = image.height
-          if (width > height) {
-            if (width > max_size) {
-              height *= max_size / width
-              width = max_size
-            }
-          }
-          else {
-            if (height > max_size) {
-              width *= max_size / height
-              height = max_size
-            }
-          }
-          canvas.width = width
-          canvas.height = height
-          canvas.getContext('2d').drawImage(image, 0, 0, width, height)
-
-          canvas.toBlob(blob => {
-            setImage(URL.createObjectURL(blob))
-            // setStatus("CROP")
-          })
-        }
-        image.src = readerEvent.target.result;
-      }
-      reader.readAsDataURL(file);
-    }
-    else {
-      setError("Please upload an image.")
-      console.log(error)
-      return
-    }
-  }
-
-  // const btnChecked = (e) => {
-  //   if(e.target.checked) {
-  //     let category = e.target.name
-  //     // setGratitude(`${category}&${Math.floor(Math.random() * GratitudeQuotes[category].length)}`)
-  //     setStatus("IMAGE")
-  //   }
-  // }
-
   const saveImage = () => {
     saveAs(image, `grateful-for-every-mile-${Date.now().toString(16)}.png`)
   }
 
   const submitDriver = (e) => {
     e.preventDefault()
-    setCar(e.target.car.value)
+    setDriver(e.target.driver.value)
     setStatus("SECOND")
   }
 
@@ -129,6 +84,47 @@ export default function Home() {
     e.preventDefault()
     setCar(parseInt(e.target.car.value))
     setStatus("FIRST-B")
+  }
+
+  const submitUnscrambled = (e) => {
+    e.preventDefault()
+    let phrase = e.target.unscrambled.value
+    setUnscrambled(phrase)
+    setStatus("SOSQUESTION")
+  }
+
+  const submitSOS = (e) => {
+    e.preventDefault()
+    let selected = Array.from(e.target.sos).filter(el => el.checked).map(el => parseInt(el.value))
+    setSOS(selected)
+    setStatus("FOURTH")
+  }
+
+  const submitFourth = (answer) => {
+    setFourth(answer)
+    setStatus("FIFTH")
+  }
+
+  const submitFifth = (answer) => {
+    setFifth(answer)
+    setStatus("SIXTH")
+  }
+
+  const submitFeedbackOrder = (e) => {
+    e.preventDefault()
+    let phrase = e.target.feedbackOrder.value
+    setFeedbackOrder(phrase)
+    setStatus("SOSQUESTION")
+  }
+
+  const ANSWERS = {
+    car: 3,
+    driver: 6,
+    unscrambled: "SHARE YOUR ETA",
+    SOS: [0,1],
+    fourth: 0,
+    fifth: 4,
+    feedbackOrder: [8,5,3,7,6,4,1,2]
   }
 
   const CARS = [
@@ -168,6 +164,73 @@ export default function Home() {
     driver15,
     driver16
   ]
+
+  const SOS_OPTIONS = [
+    accident,
+    danger,
+    music,
+    price,
+    traffic
+  ]
+
+  const FOURTH_OPTIONS = [
+    "Tracked",
+    "Followed",
+    "Tagged",
+    "Convoyed"
+  ]
+
+  const FIFTH_OPTIONS = [
+    "Star",
+    "Stars",
+    "Stars",
+    "Stars",
+    "Stars"
+  ]
+
+  const renderStars = (number) => {
+    console.log(number)
+    let stars = []
+    for (let index = 0; index <= number; index++) {
+      stars.push(index)
+    }
+    return stars.map((star, key) => (
+      <i key={key} className="fas fa-star primary-text"></i>
+    ))
+  }
+
+  const SIXTH_OPTIONS = [
+    "Describe your issue",
+    "Submit",
+    "Select the trip(recent trip or another)",
+    "Click on “Get help”",
+    "Go to the support tab",
+    "Scroll to the bottom",
+    "Choose the problem topic",
+    "Open your Bolt app"
+  ]
+
+  const calcAnswers = () => {
+    let score = 0
+    if (car === ANSWERS.car) {
+      score += 10
+    }
+    if (driver === ANSWERS.driver) {
+      score += 10
+    }
+    if (unscrambled === ANSWERS.unscrambled) {
+      score += 10
+    }
+    if (JSON.stringify(SOS) === JSON.stringify(ANSWERS.SOS)) {
+      score += 10
+    }
+    if (fourth === ANSWERS.fourth) {
+      score += 10
+    }
+    if (fifth === ANSWERS.fifth) {
+      score += 10
+    }
+  }
 
   const Layout = ({children, ...props}) => (
     <div 
@@ -284,11 +347,11 @@ export default function Home() {
           <form onSubmit={submitDriver}>
             <div className="row no-gutters">
             {
-              DRIVERS.map((car, key) => (
+              DRIVERS.map((driver, key) => (
                 <div key={key} className="col-3">
                   <label className="pic-select-label check">
-                    <img src={car} className="img-fluid" alt="" />
-                    <input type="radio" name="car" value={key} required />
+                    <img src={driver} className="img-fluid" alt="" />
+                    <input type="radio" name="driver" value={key} required />
                     <span className="checkmark"></span>
                   </label>
                 </div>
@@ -315,10 +378,10 @@ export default function Home() {
           <h5>Take your loved ones with you on your journey.</h5>
           <h5>Unscramble the letters to find out how:</h5>
           <h1 className="scrambled-letters"><span>R</span><span>E</span><span>S</span><span>H</span><span>A</span> <span>R</span><span>U</span><span>Y</span><span>O</span> <span>E</span><span>A</span><span>T</span></h1>
-          <form onSubmit={submitCar}>
+          <form onSubmit={submitUnscrambled}>
             <div className="row">
               <div className="col-12">
-                <input type="text" name="unscramble" className="form-control" placeholder="Type phrase here" required />
+                <input type="text" name="unscrambled" className="form-control" placeholder="Type phrase here" required />
               </div>
               <button className="btn btn-primary" type="submit">Submit</button>
             </div>
@@ -329,53 +392,158 @@ export default function Home() {
     </Layout>
   )
 
-  const GratitudeImageUpload = () => {
-    // let [category, quoteIndex] = gratitude.split('&')
-    return (
-    <Layout middle>
-      <h1>
-        You are <br/>
-        {/* <span className="primary-text font-weight-bold">"{GratitudeQuotes[category][quoteIndex].replace('Uche', geo.name)}"</span> */}
-      </h1>
-      <p>
-        Upload a picture to download your result. <br/>
-        Share on your social media page for the chance to win a brand new iPhone 11
-      </p>
-      <div className="col-12 mb-3 text-center">
-        {/* <img className="img-fluid" src={image} alt="Your Gratitude" /> */}
-        <Button type="primary" >
-          <label className="m-0" htmlFor='single-image'>
-            UPLOAD IMAGE
-          </label>
-        </Button>
-        <input style={{display: "none", opacity: 0}} type='file' id='single-image' onChange={onUpload} /> 
-        <button className="btn btn-primary" onClick={(e) => setStatus("START")}>Back</button>
-      </div>
-    </Layout>
-    )
-  }
-
-  const GratitudeImageCrop = () => (
+  const SOSQuestion = () => (
     <Layout>
-      <div className="crop-container">
-        {/* <Cropper
-          image={image}
-          crop={crop}
-          // zoom={1}
-          aspect={1}
-          // restrictPosition={true}
-          // zoomWithScroll={false}
-          // onCropChange={setCrop}
-          onCropChange={cropSetter}
-          // onMediaLoaded={(x) => { setCropSetter(setCrop) }}
-          // onCropComplete={onCropComplete}
-          // onZoomChange={onZoomChange}
-        /> */}
+      <h1 className="question-number">3</h1> 
+      <h1 className="question-text">
+        You're on your way to your destination
+      </h1>
+
+      <div className="row">
+        <div className="col-12">
+          <h5>In which of these situations is it appropriate to use the Rider SOS button? (pick all that apply)</h5>
+          <form onSubmit={submitSOS}>
+            <div className="row">
+            {
+              SOS_OPTIONS.map((sos, key) => (
+                <>
+                {key < 3 && 
+                <div key={key} className="col-4">
+                  <label className="pic-select-label check">
+                    <img src={sos} className="img-fluid" alt="" />
+                    <input type="checkbox" name="sos" value={key} />
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
+                }
+                </>
+              ))
+            }
+            </div>
+            <div className="row">
+            {
+              SOS_OPTIONS.map((sos, key) => (
+                <>
+                {key === 3 && 
+                <div key={key} className="col-4 offset-2">
+                  <label className="pic-select-label check">
+                    <img src={sos} className="img-fluid" alt="" />
+                    <input type="checkbox" name="sos" value={key} />
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
+                }
+                </>
+              ))
+            }
+            {
+              SOS_OPTIONS.map((sos, key) => (
+                <>
+                {key > 3 && 
+                <div key={key} className="col-4">
+                  <label className="pic-select-label check">
+                    <img src={sos} className="img-fluid" alt="" />
+                    <input type="checkbox" name="sos" value={key} />
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
+                }
+                </>
+              ))
+            }
+            </div>
+            <div className="row">
+              <div className="col-12">
+                <button className="btn btn-primary" type="submit">Submit</button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-      <div className="col-12 mb-3 text-center">
-        {/* <button className="btn btn-primary" onClick={ showCroppedImage }>Crop</button> */}
-        <button className="btn btn-primary" onClick={(e) => setStatus("SLIDER")}>Back</button>
+      
+    </Layout>
+  )
+
+  const FourthQuestion = () => (
+    <Layout>
+      <h1 className="question-number">4</h1> 
+      <h1 className="question-text">
+        You’re on your way to your destination.
+      </h1>
+
+      <div className="row">
+        <div className="col-12">
+          <h5>For added safety on Bolt rides, all trips are:</h5>
+            <div className="row">
+            {
+              FOURTH_OPTIONS.map((option, key) => (
+                <button key={key} onClick={() => submitFourth(key)} className="btn btn-secondary btn-full-width">
+                  {option}
+                </button>
+              ))
+            }
+            </div>
+        </div>
       </div>
+      
+    </Layout>
+  )
+
+  const FifthQuestion = () => (
+    <Layout>
+      <h1 className="question-number">5</h1> 
+      <h1 className="question-text">
+        You’re on your way to your destination.
+      </h1>
+
+      <div className="row">
+        <div className="col-12">
+          <h5>A’s are to the best students, as ______________ are to the best drivers.</h5>
+            <div className="row">
+            {
+              FIFTH_OPTIONS.map((option, key) => (
+                <button key={key} onClick={() => submitFifth(key)} className="btn btn-secondary btn-full-width">
+                  {renderStars(key)} {option}
+                </button>
+              ))
+            }
+            </div>
+        </div>
+      </div>
+      
+    </Layout>
+  )
+
+  const SixthQuestion = () => (
+    <Layout>
+      <h1 className="question-number">6</h1> 
+      <h1 className="question-text">
+        Your ride is over but you can help us make sure future trips are better by leaving feedback after each trip.
+      </h1>
+
+      <div className="row">
+        <div className="col-12">
+          <h5>Arrange these steps chronologically to leave feedback</h5>
+            <div className="row">
+            {
+              SIXTH_OPTIONS.map((option, key) => (
+                <button key={key} className="btn btn-secondary btn-full-width">
+                  {key+1}. {option}
+                </button>
+              ))
+            }
+            </div>
+            <form onSubmit={submitFeedbackOrder}>
+              <div className="row">
+                <div className="col-12">
+                  <input type="text" name="feedbackOrder" className="form-control" placeholder="Insert order here separated by comma" required />
+                </div>
+                <button className="btn btn-primary" type="submit">Submit</button>
+              </div>
+            </form>
+        </div>
+      </div>
+      
     </Layout>
   )
 
@@ -420,12 +588,20 @@ export default function Home() {
       content = <SecondQuestion />
       break;
     
-    case "IMAGE":
-      content = <GratitudeImageUpload />
+    case "SOSQUESTION":
+      content = <SOSQuestion />
       break;
     
-    case "CROP":
-      content = <GratitudeImageCrop />
+    case "FOURTH":
+      content = <FourthQuestion />
+      break;
+    
+    case "FIFTH":
+      content = <FifthQuestion />
+      break;
+    
+    case "SIXTH":
+      content = <SixthQuestion />
       break;
     
     case "UPLOADING":
