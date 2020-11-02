@@ -47,16 +47,17 @@ export default function Home() {
   const [ status,setStatus ] = useState("INITIAL")
   // const [ error,setError ] = useState("")
   const [ image,setImage ] = useState("")
+  const [ questionNumber, setQuestionNumber ] = useState(1)
   const [ car,setCar ] = useState(-1)
   const [ driver,setDriver ] = useState(-1)
   const [ unscrambled,setUnscrambled ] = useState("")
   const [ SOS,setSOS ] = useState([])
   const [ fourth, setFourth ] = useState(-1)
   const [ fifth, setFifth ] = useState(-1)
-  const [ feedbackOrder, setFeedbackOrder ] = useState(-1)
+  const [ feedbackOrder, setFeedbackOrder ] = useState([])
+  const [ score, setScore ] = useState(0)
 
   console.log(geo);
-  console.log(car);
 
   useLayoutEffect(() => {
     fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
@@ -77,6 +78,7 @@ export default function Home() {
   const submitDriver = (e) => {
     e.preventDefault()
     setDriver(e.target.driver.value)
+    setQuestionNumber(questionNumber+1)
     setStatus("SECOND")
   }
 
@@ -90,6 +92,7 @@ export default function Home() {
     e.preventDefault()
     let phrase = e.target.unscrambled.value
     setUnscrambled(phrase)
+    setQuestionNumber(questionNumber+1)
     setStatus("SOSQUESTION")
   }
 
@@ -97,25 +100,41 @@ export default function Home() {
     e.preventDefault()
     let selected = Array.from(e.target.sos).filter(el => el.checked).map(el => parseInt(el.value))
     setSOS(selected)
+    setQuestionNumber(questionNumber+1)
     setStatus("FOURTH")
   }
 
   const submitFourth = (answer) => {
     setFourth(answer)
+    setQuestionNumber(questionNumber+1)
     setStatus("FIFTH")
   }
 
   const submitFifth = (answer) => {
     setFifth(answer)
+    setQuestionNumber(questionNumber+1)
     setStatus("SIXTH")
   }
 
   const submitFeedbackOrder = (e) => {
     e.preventDefault()
-    let phrase = e.target.feedbackOrder.value
-    setFeedbackOrder(phrase)
-    setStatus("SOSQUESTION")
+    let elements = Array.from(e.target.elements)
+    console.log(elements);
+    let fbOrder = elements.filter(element => element.name.includes("feedbackOrder")).map(element => parseInt(element.value))
+    setFeedbackOrder(fbOrder)
+    setQuestionNumber(questionNumber+1)
+    endGame();
+    // setStatus("SOSQUESTION")
   }
+
+  const moveFeedbackCursor = (index) => {
+    console.log(sixthFormRefs);
+    if (sixthFormRefs.length > (index + 1)) {
+      sixthFormRefs[index + 1].focus();
+    }
+  }
+
+  const sixthFormRefs = []
 
   const ANSWERS = {
     car: 3,
@@ -230,6 +249,18 @@ export default function Home() {
     if (fifth === ANSWERS.fifth) {
       score += 10
     }
+    ANSWERS.feedbackOrder.forEach((item, index) => {
+      if(item === feedbackOrder[index]){
+        score += 2.5
+      }
+    })
+    setScore(score)
+    setImage(`http://services.etin.space/bolt-campaign/api/gratitude/?gratefulFor=Family&quoteIndex=${score}`)
+  }
+
+  const endGame = () => {
+    calcAnswers()
+    setStatus("ENDGAME")
   }
 
   const Layout = ({children, ...props}) => (
@@ -298,7 +329,7 @@ export default function Home() {
 
   const FirstQuestion = () => (
     <Layout>
-      <h1 className="question-number">1</h1> 
+      <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
         Your ride is here!
       </h1>
@@ -333,7 +364,7 @@ export default function Home() {
 
   const FirstQuestionB = () => (
     <Layout>
-      <h1 className="question-number">1</h1> 
+      <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
         Your ride is here!
       </h1>
@@ -368,7 +399,7 @@ export default function Home() {
 
   const SecondQuestion = () => (
     <Layout>
-      <h1 className="question-number">2</h1> 
+      <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
         Your trip has begun.
       </h1>
@@ -394,7 +425,7 @@ export default function Home() {
 
   const SOSQuestion = () => (
     <Layout>
-      <h1 className="question-number">3</h1> 
+      <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
         You're on your way to your destination
       </h1>
@@ -466,7 +497,7 @@ export default function Home() {
 
   const FourthQuestion = () => (
     <Layout>
-      <h1 className="question-number">4</h1> 
+      <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
         You’re on your way to your destination.
       </h1>
@@ -491,7 +522,7 @@ export default function Home() {
 
   const FifthQuestion = () => (
     <Layout>
-      <h1 className="question-number">5</h1> 
+      <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
         You’re on your way to your destination.
       </h1>
@@ -516,7 +547,7 @@ export default function Home() {
 
   const SixthQuestion = () => (
     <Layout>
-      <h1 className="question-number">6</h1> 
+      <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
         Your ride is over but you can help us make sure future trips are better by leaving feedback after each trip.
       </h1>
@@ -536,7 +567,19 @@ export default function Home() {
             <form onSubmit={submitFeedbackOrder}>
               <div className="row">
                 <div className="col-12">
-                  <input type="text" name="feedbackOrder" className="form-control" placeholder="Insert order here separated by comma" required />
+                  {
+                    SIXTH_OPTIONS.map((option, key) => (
+                      <input 
+                        type="text"
+                        ref={(ref) => sixthFormRefs[key] = ref} 
+                        name={`feedbackOrder${key}`} 
+                        className="form-control feedbackOrder-input" 
+                        onChange={(e) => moveFeedbackCursor(key)} 
+                        maxLength={1}
+                        required 
+                      />
+                    ))
+                  }
                 </div>
                 <button className="btn btn-primary" type="submit">Submit</button>
               </div>
@@ -547,12 +590,42 @@ export default function Home() {
     </Layout>
   )
 
-  const GratitudeDisplay = () => (
+  const InsuranceQuestion = () => (
     <Layout>
+      <h1 className="question-number">{questionNumber}</h1>
+      <h1 className="question-text">
+        Bolt trip Insurance in (country name) is called
+      </h1>
+
+      <div className="row text-left">
+        <div className="col-12">
+          <h5>Take your loved ones with you on your journey.</h5>
+          <h5>Unscramble the letters to find out how:</h5>
+          <h1 className="scrambled-letters"><span>R</span><span>E</span><span>S</span><span>H</span><span>A</span> <span>R</span><span>U</span><span>Y</span><span>O</span> <span>E</span><span>A</span><span>T</span></h1>
+          <form onSubmit={submitUnscrambled}>
+            <div className="row">
+              <div className="col-12">
+                <input type="text" name="unscrambled" className="form-control" placeholder="Type phrase here" required />
+              </div>
+              <button className="btn btn-primary" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+    </Layout>
+  )
+
+  const ScoreDisplay = () => (
+    <Layout>
+      <h1>Game Over!</h1>
       <h1>Share Your Image!</h1>
       <div className="col-12 mb-3 text-center">
         <img className="img-fluid" src={image} alt="Your Gratitude" />
       </div>
+      <h5>
+        Your score is {score}
+      </h5>
       <button className="btn btn-primary" onClick={saveImage}>Download</button>
       <button className="btn btn-primary" onClick={(e) => setStatus("IMAGE")}>Back</button>
     </Layout>
@@ -604,6 +677,10 @@ export default function Home() {
       content = <SixthQuestion />
       break;
     
+    case "INSURANCEQUESTION":
+      content = <InsuranceQuestion />
+      break;
+    
     case "UPLOADING":
       content = (
         <Layout middle>
@@ -615,8 +692,8 @@ export default function Home() {
       )
       break;
 
-    case "LOADED":
-      content = <GratitudeDisplay />
+    case "ENDGAME":
+      content = <ScoreDisplay />
       break;
     
     default:

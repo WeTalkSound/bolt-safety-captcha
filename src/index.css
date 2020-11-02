@@ -107,6 +107,14 @@ a:hover a:active {
   margin: 10px;
   line-height: 65px;
 }
+
+.form-control.feedbackOrder-input {
+  width: 12.5%;
+  float: left;
+  border-radius: 0;
+  padding: 0;
+}
+
 @media (max-width: 425px) {
   .landing-col {
     padding-left: 0;
