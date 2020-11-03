@@ -43,7 +43,7 @@ import price from './sos/price.png'
 import traffic from './sos/traffic.png'
 
 export default function Home() {
-  const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG"})
+  const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG", country: "Nigeria"})
   const [ status,setStatus ] = useState("INITIAL")
   // const [ error,setError ] = useState("")
   const [ image,setImage ] = useState("")
@@ -56,6 +56,7 @@ export default function Home() {
   const [ fifth, setFifth ] = useState(-1)
   const [ feedbackOrder, setFeedbackOrder ] = useState([])
   const [ score, setScore ] = useState(0)
+  const [ message, setMessage ] = useState("")
 
   console.log(geo);
 
@@ -72,26 +73,37 @@ export default function Home() {
   }, [])
 
   const saveImage = () => {
-    saveAs(image, `grateful-for-every-mile-${Date.now().toString(16)}.png`)
+    saveAs(image, `bolt-protect-${Date.now().toString(16)}.png`)
   }
 
   const submitDriver = (e) => {
     e.preventDefault()
-    setDriver(e.target.driver.value)
+    let answer = parseInt(e.target.driver.value);
+    setDriver(answer)
+    if(answer !== ANSWERS.driver) {
+      endGame("Your answer was incorrect. Always look out for the driver's face in the app and confirm that it is the same person")
+    }
     setQuestionNumber(questionNumber+1)
     setStatus("SECOND")
   }
 
   const submitCar = (e) => {
     e.preventDefault()
-    setCar(parseInt(e.target.car.value))
+    let answer = parseInt(e.target.car.value)
+    setCar(answer)
+    if(answer !== ANSWERS.car) {
+      endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+    }
     setStatus("FIRST-B")
   }
 
   const submitUnscrambled = (e) => {
     e.preventDefault()
-    let phrase = e.target.unscrambled.value
+    let phrase = e.target.unscrambled.value.toUpperCase()
     setUnscrambled(phrase)
+    if(phrase !== ANSWERS.unscrambled) {
+      endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+    }
     setQuestionNumber(questionNumber+1)
     setStatus("SOSQUESTION")
   }
@@ -100,18 +112,27 @@ export default function Home() {
     e.preventDefault()
     let selected = Array.from(e.target.sos).filter(el => el.checked).map(el => parseInt(el.value))
     setSOS(selected)
+    if (JSON.stringify(selected) !== JSON.stringify(ANSWERS.SOS)) {
+      endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+    }
     setQuestionNumber(questionNumber+1)
     setStatus("FOURTH")
   }
 
   const submitFourth = (answer) => {
     setFourth(answer)
+    if(answer !== ANSWERS.fourth) {
+      endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+    }
     setQuestionNumber(questionNumber+1)
     setStatus("FIFTH")
   }
 
   const submitFifth = (answer) => {
     setFifth(answer)
+    if(answer !== ANSWERS.fifth) {
+      endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+    }
     setQuestionNumber(questionNumber+1)
     setStatus("SIXTH")
   }
@@ -119,12 +140,20 @@ export default function Home() {
   const submitFeedbackOrder = (e) => {
     e.preventDefault()
     let elements = Array.from(e.target.elements)
-    console.log(elements);
     let fbOrder = elements.filter(element => element.name.includes("feedbackOrder")).map(element => parseInt(element.value))
     setFeedbackOrder(fbOrder)
+    const isWrongOrder = (item, index) => {
+      if(item === fbOrder[index]){
+        return false
+      }
+      return true
+    }
+    if (ANSWERS.feedbackOrder.some(isWrongOrder)) {
+      endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+    }
     setQuestionNumber(questionNumber+1)
-    endGame();
-    // setStatus("SOSQUESTION")
+    setStatus("INSURANCEQUESTION")
+    endGame("You've answered all questions! You win!")
   }
 
   const moveFeedbackCursor = (index) => {
@@ -258,8 +287,9 @@ export default function Home() {
     setImage(`http://services.etin.space/bolt-campaign/api/gratitude/?gratefulFor=Family&quoteIndex=${score}`)
   }
 
-  const endGame = () => {
+  const endGame = (message) => {
     calcAnswers()
+    setMessage(message)
     setStatus("ENDGAME")
   }
 
@@ -576,7 +606,7 @@ export default function Home() {
                         className="form-control feedbackOrder-input" 
                         onChange={(e) => moveFeedbackCursor(key)} 
                         maxLength={1}
-                        required 
+                        required
                       />
                     ))
                   }
@@ -594,7 +624,7 @@ export default function Home() {
     <Layout>
       <h1 className="question-number">{questionNumber}</h1>
       <h1 className="question-text">
-        Bolt trip Insurance in (country name) is called
+        Bolt trip Insurance in {geo.country} is called
       </h1>
 
       <div className="row text-left">
@@ -619,6 +649,7 @@ export default function Home() {
   const ScoreDisplay = () => (
     <Layout>
       <h1>Game Over!</h1>
+      <p>{message}</p>
       <h1>Share Your Image!</h1>
       <div className="col-12 mb-3 text-center">
         <img className="img-fluid" src={image} alt="Your Gratitude" />
