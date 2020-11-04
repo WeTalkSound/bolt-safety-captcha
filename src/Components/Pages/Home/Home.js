@@ -41,6 +41,7 @@ import danger from './sos/danger.png'
 import music from './sos/music.png'
 import price from './sos/price.png'
 import traffic from './sos/traffic.png'
+import insuranceImage from './insurance-image.png'
 
 export default function Home() {
   const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG", country: "Nigeria"})
@@ -55,6 +56,7 @@ export default function Home() {
   const [ fourth, setFourth ] = useState(-1)
   const [ fifth, setFifth ] = useState(-1)
   const [ feedbackOrder, setFeedbackOrder ] = useState([])
+  const [ insurance,setInsurance ] = useState("")
   const [ score, setScore ] = useState(0)
   const [ message, setMessage ] = useState("")
 
@@ -72,8 +74,8 @@ export default function Home() {
       })
   }, [])
 
-  const saveImage = () => {
-    saveAs(image, `bolt-protect-${Date.now().toString(16)}.png`)
+  const saveImage = (name) => {
+    saveAs(image + name, `bolt-protect-${Date.now().toString(16)}.png`)
   }
 
   const submitDriver = (e) => {
@@ -164,6 +166,18 @@ export default function Home() {
     return
   }
 
+  const submitInsurance = (e) => {
+    e.preventDefault()
+    let phrase = e.target.insurance.value.toUpperCase()
+    setInsurance(phrase)
+    if(phrase !== ANSWERS.insurance) {
+      endGame("Your answer was incorrect. Bolt's Insurance plan is called Bolt Trip Protection")
+      return
+    }
+    setQuestionNumber(questionNumber+1)
+    setStatus("SOSQUESTION")
+  }
+
   const moveFeedbackCursor = (index) => {
     console.log(sixthFormRefs);
     if (sixthFormRefs.length > (index + 1)) {
@@ -180,7 +194,8 @@ export default function Home() {
     SOS: [0,1],
     fourth: 0,
     fifth: 4,
-    feedbackOrder: [8,5,3,7,6,4,1,2]
+    feedbackOrder: [8,5,3,7,6,4,1,2],
+    insurance: "BOLT TRIP PROTECTION",
   }
 
   const CARS = [
@@ -291,17 +306,40 @@ export default function Home() {
         score += 2.5
       }
     })
+    if (insurance === ANSWERS.insurance) {
+      score += 10
+    }
+
     setScore(score)
-    setImage(`http://services.etin.space/bolt-campaign/api/gratitude/?gratefulFor=Family&quoteIndex=${score}`)
+    setImage(`https://services.etin.space/bolt-campaign/api/safety-captcha/?score=${score}&name=`)
   }
 
   const endGame = (message) => {
-    console.log("HEre");
-    
     calcAnswers()
     setMessage(message)
     setStatus("ENDGAME")
   }
+
+  const submitNameAndDownloadCertificate = (e) => {
+    e.preventDefault()
+    let name = e.target.name.value
+    let handle = e.target.handle.value
+
+    fetch("https://bolt-campaigns.firebaseio.com/bolt-safety-captcha/high-scores.json", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name,
+            country: geo.country,
+            handle: handle,
+            score: score
+        })
+    }).then(data => setStatus("SCORE_SAVED"))
+    saveImage(name)
+  } 
 
   const Layout = ({children, ...props}) => (
     <div 
@@ -454,7 +492,9 @@ export default function Home() {
               <div className="col-12">
                 <input type="text" name="unscrambled" className="form-control" placeholder="Type phrase here" required />
               </div>
-              <button className="btn btn-primary" type="submit">Submit</button>
+              <div className="col-12">
+                <button className="btn btn-primary" type="submit">Submit</button>
+              </div>
             </div>
           </form>
         </div>
@@ -639,15 +679,16 @@ export default function Home() {
 
       <div className="row text-left">
         <div className="col-12">
-          <h5>Take your loved ones with you on your journey.</h5>
-          <h5>Unscramble the letters to find out how:</h5>
-          <h1 className="scrambled-letters"><span>R</span><span>E</span><span>S</span><span>H</span><span>A</span> <span>R</span><span>U</span><span>Y</span><span>O</span> <span>E</span><span>A</span><span>T</span></h1>
-          <form onSubmit={submitUnscrambled}>
+          <h5>Unscramble the captcha to find out:</h5>
+          <img className="img-fluid" src={insuranceImage} alt="Insurance Captcha" />
+          <form onSubmit={submitInsurance}>
             <div className="row">
               <div className="col-12">
-                <input type="text" name="unscrambled" className="form-control" placeholder="Type phrase here" required />
+                <input type="text" name="insurance" className="form-control" placeholder="Type phrase here" required />
               </div>
-              <button className="btn btn-primary" type="submit">Submit</button>
+              <div className="col-12">
+                <button className="btn btn-primary" type="submit">Submit</button>
+              </div>
             </div>
           </form>
         </div>
@@ -659,16 +700,37 @@ export default function Home() {
   const ScoreDisplay = () => (
     <Layout>
       <h1>Game Over!</h1>
-      <p>{message}</p>
-      <h1>Share Your Image!</h1>
-      <div className="col-12 mb-3 text-center">
-        <img className="img-fluid" src={image} alt="Your Gratitude" />
-      </div>
+      <div dangerouslySetInnerHTML={{ __html: message }}></div>
       <h5>
         Your score is {score}
       </h5>
-      <button className="btn btn-primary" onClick={saveImage}>Download</button>
-      <button className="btn btn-primary" onClick={(e) => setStatus("IMAGE")}>Back</button>
+      <h5>
+        Submit your name and social media handle to join the leaderboard and download your certificate
+      </h5>
+      <form onSubmit={submitNameAndDownloadCertificate}>
+        <div className="row">
+          <div className="col-12">
+            <input type="text" name="name" className="form-control" placeholder="Your Name" required />
+          </div>
+          <div className="col-12">
+            <input type="text" name="handle" className="form-control" placeholder="Your Social Media Handle" required />
+          </div>
+          <div className="col-12">
+            <button className="btn btn-primary" type="submit">Submit</button>
+          </div>
+        </div>
+      </form>
+    </Layout>
+  )
+
+  const ScoreSaved = () => (
+    <Layout>
+      <h1>Your score has been saved!</h1>
+      <h5>
+        We pick the top members of the leaderboard, so keep playing sharing to stand a bigger chance!
+      </h5>
+      <button className="btn btn-primary" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
+      <a className="btn btn-primary" href="/">Restart</a>
     </Layout>
   )
 
@@ -735,6 +797,10 @@ export default function Home() {
 
     case "ENDGAME":
       content = <ScoreDisplay />
+      break;
+
+    case "SCORE_SAVED":
+      content = <ScoreSaved />
       break;
     
     default:
