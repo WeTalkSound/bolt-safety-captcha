@@ -82,6 +82,7 @@ export default function Home() {
     setDriver(answer)
     if(answer !== ANSWERS.driver) {
       endGame("Your answer was incorrect. Always look out for the driver's face in the app and confirm that it is the same person")
+      return
     }
     setQuestionNumber(questionNumber+1)
     setStatus("SECOND")
@@ -93,6 +94,7 @@ export default function Home() {
     setCar(answer)
     if(answer !== ANSWERS.car) {
       endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+      return
     }
     setStatus("FIRST-B")
   }
@@ -103,6 +105,7 @@ export default function Home() {
     setUnscrambled(phrase)
     if(phrase !== ANSWERS.unscrambled) {
       endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+      return
     }
     setQuestionNumber(questionNumber+1)
     setStatus("SOSQUESTION")
@@ -114,6 +117,7 @@ export default function Home() {
     setSOS(selected)
     if (JSON.stringify(selected) !== JSON.stringify(ANSWERS.SOS)) {
       endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+      return
     }
     setQuestionNumber(questionNumber+1)
     setStatus("FOURTH")
@@ -123,6 +127,7 @@ export default function Home() {
     setFourth(answer)
     if(answer !== ANSWERS.fourth) {
       endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+      return
     }
     setQuestionNumber(questionNumber+1)
     setStatus("FIFTH")
@@ -132,6 +137,7 @@ export default function Home() {
     setFifth(answer)
     if(answer !== ANSWERS.fifth) {
       endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+      return
     }
     setQuestionNumber(questionNumber+1)
     setStatus("SIXTH")
@@ -150,10 +156,12 @@ export default function Home() {
     }
     if (ANSWERS.feedbackOrder.some(isWrongOrder)) {
       endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+      return
     }
     setQuestionNumber(questionNumber+1)
     setStatus("INSURANCEQUESTION")
     endGame("You've answered all questions! You win!")
+    return
   }
 
   const moveFeedbackCursor = (index) => {
@@ -288,6 +296,8 @@ export default function Home() {
   }
 
   const endGame = (message) => {
+    console.log("HEre");
+    
     calcAnswers()
     setMessage(message)
     setStatus("ENDGAME")
