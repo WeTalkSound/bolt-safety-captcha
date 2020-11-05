@@ -42,6 +42,9 @@ import music from './sos/music.png'
 import price from './sos/price.png'
 import traffic from './sos/traffic.png'
 import insuranceImage from './insurance-image.png'
+import Leaderboard from './Leaderboard';
+import Timer from './Timer';
+import Header from '../../Utilities/Header/Header';
 
 export default function Home() {
   const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG", country: "Nigeria"})
@@ -59,8 +62,11 @@ export default function Home() {
   const [ insurance,setInsurance ] = useState("")
   const [ score, setScore ] = useState(0)
   const [ message, setMessage ] = useState("")
+  const [ started, setStarted ] = useState(false)
+  const [ time, setTime ] = useState((new Date()).getTime() + (8 * 60000))
 
   console.log(geo);
+  console.log(setTime);
 
   useLayoutEffect(() => {
     fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
@@ -118,7 +124,7 @@ export default function Home() {
     let selected = Array.from(e.target.sos).filter(el => el.checked).map(el => parseInt(el.value))
     setSOS(selected)
     if (JSON.stringify(selected) !== JSON.stringify(ANSWERS.SOS)) {
-      endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+      endGame("Your answer was incorrect. The SOS button should only be used in dangerous situations.")
       return
     }
     setQuestionNumber(questionNumber+1)
@@ -128,7 +134,7 @@ export default function Home() {
   const submitFourth = (answer) => {
     setFourth(answer)
     if(answer !== ANSWERS.fourth) {
-      endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+      endGame("Your answer was incorrect. All Bolt rides are Tracked to ensure safety")
       return
     }
     setQuestionNumber(questionNumber+1)
@@ -138,7 +144,7 @@ export default function Home() {
   const submitFifth = (answer) => {
     setFifth(answer)
     if(answer !== ANSWERS.fifth) {
-      endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
+      endGame("Your answer was incorrect. The best drivers should be rated 5 Stars!")
       return
     }
     setQuestionNumber(questionNumber+1)
@@ -151,19 +157,33 @@ export default function Home() {
     let fbOrder = elements.filter(element => element.name.includes("feedbackOrder")).map(element => parseInt(element.value))
     setFeedbackOrder(fbOrder)
     const isWrongOrder = (item, index) => {
+      console.log(item, fbOrder[index])
       if(item === fbOrder[index]){
         return false
       }
       return true
     }
+    console.log(ANSWERS.feedbackOrder.some(isWrongOrder));
+    
     if (ANSWERS.feedbackOrder.some(isWrongOrder)) {
-      endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
+      endGame(`
+        <h5>Your answer was incorrect.</h5> 
+        <p>The correct order for giving feedback for a ride is:</p>
+        <ol>
+          <li>Open your Bolt app</li>
+          <li>Go to the support tab</li>
+          <li>Select the trip(recent trip or another)</li>
+          <li>Choose the problem topic</li>
+          <li>Scroll to the bottom</li>
+          <li>Click on “Get help”</li>
+          <li>Describe your issue</li>
+          <li>Submit</li>
+        </ol>
+      `)
       return
     }
     setQuestionNumber(questionNumber+1)
     setStatus("INSURANCEQUESTION")
-    endGame("You've answered all questions! You win!")
-    return
   }
 
   const submitInsurance = (e) => {
@@ -175,7 +195,8 @@ export default function Home() {
       return
     }
     setQuestionNumber(questionNumber+1)
-    setStatus("SOSQUESTION")
+    endGame("You've answered all questions! You win!")
+    return
   }
 
   const moveFeedbackCursor = (index) => {
@@ -269,7 +290,6 @@ export default function Home() {
       <i key={key} className="fas fa-star primary-text"></i>
     ))
   }
-
   const SIXTH_OPTIONS = [
     "Describe your issue",
     "Submit",
@@ -307,15 +327,16 @@ export default function Home() {
       }
     })
     if (insurance === ANSWERS.insurance) {
-      score += 10
+      score += 20
     }
 
-    setScore(score)
     setImage(`https://services.etin.space/bolt-campaign/api/safety-captcha/?score=${score}&name=`)
+    setScore( score * ( (time - Date.now())/1000 ) )
   }
 
   const endGame = (message) => {
     calcAnswers()
+    setStarted(false)
     setMessage(message)
     setStatus("ENDGAME")
   }
@@ -401,7 +422,8 @@ export default function Home() {
         advantage of all our safety features by solving as many
         CAPTCHAs as possible?
       </p>
-      <button className="btn btn-primary" onClick={(e) => setStatus("FIRST")}>Get started</button>
+      <button className="btn btn-primary" onClick={(e) => {setStatus("FIRST"); setStarted(true)}}>Get started</button>
+      <button className="btn btn-primary" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
     </Layout>
   )
 
@@ -635,7 +657,8 @@ export default function Home() {
       <div className="row">
         <div className="col-12">
           <h5>Arrange these steps chronologically to leave feedback</h5>
-            <div className="row">
+          <p>We won't tell if you look at your app for these 😉</p>
+          <div className="row">
             {
               SIXTH_OPTIONS.map((option, key) => (
                 <button key={key} className="btn btn-secondary btn-full-width">
@@ -643,7 +666,7 @@ export default function Home() {
                 </button>
               ))
             }
-            </div>
+          </div>
             <form onSubmit={submitFeedbackOrder}>
               <div className="row">
                 <div className="col-12">
@@ -709,10 +732,10 @@ export default function Home() {
       </h5>
       <form onSubmit={submitNameAndDownloadCertificate}>
         <div className="row">
-          <div className="col-12">
+          <div className="col-12 mb-3">
             <input type="text" name="name" className="form-control" placeholder="Your Name" required />
           </div>
-          <div className="col-12">
+          <div className="col-12 mb-3">
             <input type="text" name="handle" className="form-control" placeholder="Your Social Media Handle" required />
           </div>
           <div className="col-12">
@@ -802,6 +825,10 @@ export default function Home() {
     case "SCORE_SAVED":
       content = <ScoreSaved />
       break;
+
+    case "LEADERBOARD":
+      content = <Leaderboard limit={30} />
+      break;
     
     default:
       break;
@@ -809,6 +836,11 @@ export default function Home() {
 
   return (
     <>
+      <Header>
+        {started &&
+          <Timer date={time} onEnd={() => endGame("")} />
+        }
+      </Header>
       <div className="col-12 justify-content-center">
         <div className="text-center justify-content-center">
           {content}
