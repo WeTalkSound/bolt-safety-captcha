@@ -23,7 +23,7 @@ export default class Timer extends Component {
     }
 
     componentWillUnmount() {
-        this.stop();
+        clearInterval(this.interval);
     }
 
     calculateCountdown = (endDate) => {

@@ -169,7 +169,7 @@ export default function Home() {
       endGame(`
         <h5>Your answer was incorrect.</h5> 
         <p>The correct order for giving feedback for a ride is:</p>
-        <ol>
+        <ol style="padding: 0 30%;">
           <li>Open your Bolt app</li>
           <li>Go to the support tab</li>
           <li>Select the trip(recent trip or another)</li>
@@ -183,6 +183,7 @@ export default function Home() {
       return
     }
     setQuestionNumber(questionNumber+1)
+    
     setStatus("INSURANCEQUESTION")
   }
 
@@ -768,8 +769,9 @@ export default function Home() {
       <h5>
         We pick the top members of the leaderboard, so keep playing sharing to stand a bigger chance!
       </h5>
-      <button className="btn btn-primary" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
-      <a className="btn btn-primary" href="/">Restart</a>
+      <button className="btn btn-primary mb-3" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
+      &nbsp;&nbsp;
+      <a className="btn btn-primary mb-3" href="/">Restart</a>
     </Layout>
   )
 
@@ -854,7 +856,7 @@ export default function Home() {
     <>
       <Header>
         {started &&
-          <Timer date={time} onEnd={() => endGame("")} />
+          <Timer date={time} onEnd={() => endGame("Time's up!")} />
         }
       </Header>
       <div className="col-12 justify-content-center">
