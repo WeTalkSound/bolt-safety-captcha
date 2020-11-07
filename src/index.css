@@ -70,7 +70,17 @@ a:hover a:active {
 }
 
 .landing-text {
-  border-right: solid 1px var(--primary-color);
+}
+
+.landing-text::after {
+  border: solid 1px var(--primary-color);
+  height: 60px;
+  width: 1px;
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  right: 0;
+  content: "";
 }
 
 .landing-label {
@@ -98,6 +108,10 @@ a:hover a:active {
 
 .pic-select-label {
   margin: 0;
+}
+
+.scrambled-letters {
+  overflow-wrap: break-word;
 }
 
 .scrambled-letters span {
@@ -131,6 +145,15 @@ a:hover a:active {
 
   .landing-h1 {
     font-size: 17px;
+  }
+
+  .landing-text::after {
+    height: 45px;
+    right: 5px;
+  }
+
+  .btn {
+    width: 100%;
   }
 }
 

@@ -331,7 +331,8 @@ export default function Home() {
     }
 
     setImage(`https://services.etin.space/bolt-campaign/api/safety-captcha/?score=${score}&name=`)
-    setScore( score * ( (time - Date.now())/1000 ) )
+    score = time > Date.now() ? score * ( (time - Date.now())/1000 ) : score
+    setScore( Math.round(score) )
   }
 
   const endGame = (message) => {
@@ -376,7 +377,7 @@ export default function Home() {
       }
     >
       <div className="row">
-        <div  className="col-12 animate__animated animate__flipInX">
+        <div  className="col-12 animate__animated animate__fadeIn animate__slow">
           {children}
         </div>
       </div>
@@ -415,7 +416,7 @@ export default function Home() {
         </div>
       </div>
       <p>
-        We believe that safety is in the lile things that happen <b>before</b>, < b>during</b> and <b>after</b> every ride.
+        We believe that safety is in the little things that happen <b>before</b>, < b>during</b> and <b>after</b> every ride.
       </p>
       <p>
         Can you prove that you’re a safety champ and can take
@@ -423,6 +424,7 @@ export default function Home() {
         CAPTCHAs as possible?
       </p>
       <button className="btn btn-primary" onClick={(e) => {setStatus("FIRST"); setStarted(true)}}>Get started</button>
+      &nbsp;&nbsp;
       <button className="btn btn-primary" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
     </Layout>
   )
@@ -435,11 +437,13 @@ export default function Home() {
       </h1>
 
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-6 mb-3">
           <img src={boltApp} className="img-fluid" alt="Your bolt ride" />
         </div>
         <div className="col-md-6">
           <h5>A. Find your driver's car</h5>
+          <p>Click the image that has your driver's car and click submit</p>
+          <p>Look out for the plate number</p>
           <form onSubmit={submitCar}>
             <div className="row no-gutters">
             {
@@ -453,7 +457,9 @@ export default function Home() {
                 </div>
               ))
             }
-              <button className="btn btn-primary" type="submit">Submit</button>
+              <div className="col-12 mt-3">
+                <button className="btn btn-primary" type="submit">Submit</button>
+              </div>
             </div>
           </form>
         </div>
@@ -470,11 +476,12 @@ export default function Home() {
       </h1>
 
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-6 mb-3">
           <img src={boltApp} className="img-fluid" alt="Your bolt ride" />
         </div>
         <div className="col-md-6">
           <h5>A. Find your driver</h5>
+          <p>Click the image that has your driver and click submit</p>
           <form onSubmit={submitDriver}>
             <div className="row no-gutters">
             {
@@ -488,7 +495,9 @@ export default function Home() {
                 </div>
               ))
             }
-              <button className="btn btn-primary" type="submit">Submit</button>
+              <div className="col-12 mt-3">
+                <button className="btn btn-primary" type="submit">Submit</button>
+              </div>
             </div>
           </form>
         </div>
@@ -508,13 +517,18 @@ export default function Home() {
         <div className="col-12">
           <h5>Take your loved ones with you on your journey.</h5>
           <h5>Unscramble the letters to find out how:</h5>
-          <h1 className="scrambled-letters"><span>R</span><span>E</span><span>S</span><span>H</span><span>A</span> <span>R</span><span>U</span><span>Y</span><span>O</span> <span>E</span><span>A</span><span>T</span></h1>
+          <h1 className="scrambled-letters">
+            <span>R</span><span>E</span><span>S</span><span>H</span><span>A</span>
+            &nbsp;&nbsp;&nbsp;
+            <span>R</span><span>U</span><span>Y</span><span>O</span>
+            &nbsp;&nbsp;&nbsp;
+            <span>E</span><span>A</span><span>T</span></h1>
           <form onSubmit={submitUnscrambled}>
             <div className="row">
               <div className="col-12">
                 <input type="text" name="unscrambled" className="form-control" placeholder="Type phrase here" required />
               </div>
-              <div className="col-12">
+              <div className="col-12 mt-3">
                 <button className="btn btn-primary" type="submit">Submit</button>
               </div>
             </div>
@@ -541,7 +555,7 @@ export default function Home() {
               SOS_OPTIONS.map((sos, key) => (
                 <>
                 {key < 3 && 
-                <div key={key} className="col-4">
+                <div key={key} className="col-4 mb-3">
                   <label className="pic-select-label check">
                     <img src={sos} className="img-fluid" alt="" />
                     <input type="checkbox" name="sos" value={key} />
@@ -558,7 +572,7 @@ export default function Home() {
               SOS_OPTIONS.map((sos, key) => (
                 <>
                 {key === 3 && 
-                <div key={key} className="col-4 offset-2">
+                <div key={key} className="col-4 mb-3 offset-2">
                   <label className="pic-select-label check">
                     <img src={sos} className="img-fluid" alt="" />
                     <input type="checkbox" name="sos" value={key} />
@@ -573,7 +587,7 @@ export default function Home() {
               SOS_OPTIONS.map((sos, key) => (
                 <>
                 {key > 3 && 
-                <div key={key} className="col-4">
+                <div key={key} className="col-4 mb-3">
                   <label className="pic-select-label check">
                     <img src={sos} className="img-fluid" alt="" />
                     <input type="checkbox" name="sos" value={key} />
@@ -684,7 +698,9 @@ export default function Home() {
                     ))
                   }
                 </div>
-                <button className="btn btn-primary" type="submit">Submit</button>
+                <div className="col-12 mt-3">
+                  <button className="btn btn-primary" type="submit">Submit</button>
+                </div>
               </div>
             </form>
         </div>
@@ -709,7 +725,7 @@ export default function Home() {
               <div className="col-12">
                 <input type="text" name="insurance" className="form-control" placeholder="Type phrase here" required />
               </div>
-              <div className="col-12">
+              <div className="col-12 mt-3 text-center">
                 <button className="btn btn-primary" type="submit">Submit</button>
               </div>
             </div>
