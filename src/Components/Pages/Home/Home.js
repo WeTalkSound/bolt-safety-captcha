@@ -91,9 +91,11 @@ export default function Home() {
     setStatus("POSTQUESTION")
     setQuestionNumber(questionNumber+1)
 
+    let timing = message.length ? 5000 : 3000
+
     setTimeout(() => {
       setStatus(status)
-    }, 3000)
+    }, timing)
   }
 
   const submitDriver = (e) => {
