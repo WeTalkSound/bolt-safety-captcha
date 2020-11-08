@@ -45,6 +45,8 @@ import insuranceImage from './insurance-image.png'
 import Leaderboard from './Leaderboard';
 import Timer from './Timer';
 import Header from '../../Utilities/Header/Header';
+import correctIcon from './checked.png'
+import wrongIcon from './close.png'
 
 export default function Home() {
   const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG", country: "Nigeria"})
@@ -84,71 +86,77 @@ export default function Home() {
     saveAs(image + name, `bolt-protect-${Date.now().toString(16)}.png`)
   }
 
+  const postQuestion = (message, status) => {
+    setMessage(message)
+    setStatus("POSTQUESTION")
+    setQuestionNumber(questionNumber+1)
+
+    setTimeout(() => {
+      setStatus(status)
+    }, 3000)
+  }
+
   const submitDriver = (e) => {
     e.preventDefault()
     let answer = parseInt(e.target.driver.value);
     setDriver(answer)
+    let message = ""
     if(answer !== ANSWERS.driver) {
-      endGame("Your answer was incorrect. Always look out for the driver's face in the app and confirm that it is the same person")
-      return
+      message = "Your driver's picture can be seen on the order progress screen in your app immediately your request is accepted"
     }
-    setQuestionNumber(questionNumber+1)
-    setStatus("SECOND")
+    postQuestion(message, "SECOND")
   }
 
   const submitCar = (e) => {
     e.preventDefault()
     let answer = parseInt(e.target.car.value)
     setCar(answer)
+    let message = ""
     if(answer !== ANSWERS.car) {
-      endGame("Your answer was incorrect. Always look out for the plate number in the app and confirm that it is the same as is on the car")
-      return
+      message = "Your ride's number plate is visible on the order progress screen in your app immediately your request is accepted"
     }
-    setStatus("FIRST-B")
+    postQuestion(message, "FIRST-B")
   }
 
   const submitUnscrambled = (e) => {
     e.preventDefault()
     let phrase = e.target.unscrambled.value.toUpperCase()
     setUnscrambled(phrase)
+    let message = ""
     if(phrase !== ANSWERS.unscrambled) {
-      endGame("Your answer was incorrect. Share your ETA from the app with friends and family")
-      return
+      message = "The “SHARE YOUR ETA” function allows your loved ones follow every turn on your trip in real time from any internet enabled device"
     }
-    setQuestionNumber(questionNumber+1)
-    setStatus("SOSQUESTION")
+    let status = geo.country === "Kenya" || geo.country === "South Africa" ? "SOSQUESTION" : "FOURTH"
+    postQuestion(message, status)
   }
 
   const submitSOS = (e) => {
     e.preventDefault()
     let selected = Array.from(e.target.sos).filter(el => el.checked).map(el => parseInt(el.value))
     setSOS(selected)
+    let message = ""
     if (JSON.stringify(selected) !== JSON.stringify(ANSWERS.SOS)) {
-      endGame("Your answer was incorrect. The SOS button should only be used in dangerous situations.")
-      return
+      message = "The SOS button should only be used in true emergencies so that the emergency services can respond to incidents where they are needed"
     }
-    setQuestionNumber(questionNumber+1)
-    setStatus("FOURTH")
+    postQuestion(message, "FOURTH")
   }
 
   const submitFourth = (answer) => {
     setFourth(answer)
+    let message = ""
     if(answer !== ANSWERS.fourth) {
-      endGame("Your answer was incorrect. All Bolt rides are Tracked to ensure safety")
-      return
+      message = "All Bolt rides are tracked and saved so that we know where yor ride was at every point of the trip"
     }
-    setQuestionNumber(questionNumber+1)
-    setStatus("FIFTH")
+    postQuestion(message, "FIFTH")
   }
 
   const submitFifth = (answer) => {
     setFifth(answer)
+    let message = ""
     if(answer !== ANSWERS.fifth) {
-      endGame("Your answer was incorrect. The best drivers should be rated 5 Stars!")
-      return
+      message = "Your ratings help us maintain standards on the Bolt platform. They are anonymous to your driver so it is important that you give your honest feedback"
     }
-    setQuestionNumber(questionNumber+1)
-    setStatus("SIXTH")
+    postQuestion(message, "SIXTH")
   }
 
   const submitFeedbackOrder = (e) => {
@@ -156,6 +164,7 @@ export default function Home() {
     let elements = Array.from(e.target.elements)
     let fbOrder = elements.filter(element => element.name.includes("feedbackOrder")).map(element => parseInt(element.value))
     setFeedbackOrder(fbOrder)
+    let message = ""
     const isWrongOrder = (item, index) => {
       console.log(item, fbOrder[index])
       if(item === fbOrder[index]){
@@ -166,36 +175,26 @@ export default function Home() {
     console.log(ANSWERS.feedbackOrder.some(isWrongOrder));
     
     if (ANSWERS.feedbackOrder.some(isWrongOrder)) {
-      endGame(`
-        <h5>Your answer was incorrect.</h5> 
-        <p>The correct order for giving feedback for a ride is:</p>
-        <ol style="padding: 0 30%;">
-          <li>Open your Bolt app</li>
-          <li>Go to the support tab</li>
-          <li>Select the trip(recent trip or another)</li>
-          <li>Choose the problem topic</li>
-          <li>Scroll to the bottom</li>
-          <li>Click on “Get help”</li>
-          <li>Describe your issue</li>
-          <li>Submit</li>
-        </ol>
-      `)
-      return
+      message = "Our Customer Support team is always on hand to respond to your comments so leaving feedback on the trip in question via in-app support is usually the quickest way to reach us"
     }
-    setQuestionNumber(questionNumber+1)
-    
-    setStatus("INSURANCEQUESTION")
+    let status = geo.country === "Nigeria" || geo.country === "South Africa" ? "INSURANCEQUESTION" : "FINAL"
+    postQuestion(message, status)
   }
 
   const submitInsurance = (e) => {
     e.preventDefault()
     let phrase = e.target.insurance.value.toUpperCase()
     setInsurance(phrase)
+    let message = ""
     if(phrase !== ANSWERS.insurance) {
-      endGame("Your answer was incorrect. Bolt's Insurance plan is called Bolt Trip Protection")
-      return
+      message = "“Bolt Trip Protection” covers you and your possessions on every Bolt ride"
     }
-    setQuestionNumber(questionNumber+1)
+    postQuestion(message, "FINAL")
+    return
+  }
+
+  const submitFinal = (e) => {
+    e.preventDefault()
     endGame("You've answered all questions! You win!")
     return
   }
@@ -216,7 +215,7 @@ export default function Home() {
     SOS: [0,1],
     fourth: 0,
     fifth: 4,
-    feedbackOrder: [8,5,3,7,6,4,1,2],
+    feedbackOrder: [5,1,6,2,4,3],
     insurance: "BOLT TRIP PROTECTION",
   }
 
@@ -292,14 +291,12 @@ export default function Home() {
     ))
   }
   const SIXTH_OPTIONS = [
-    "Describe your issue",
-    "Submit",
-    "Select the trip(recent trip or another)",
-    "Click on “Get help”",
     "Go to the support tab",
-    "Scroll to the bottom",
     "Choose the problem topic",
-    "Open your Bolt app"
+    "Submit",
+    "Click on “Get help” and describe your issue",
+    "Open your Bolt app",
+    "Select the trip (recent trip or another)"
   ]
 
   const calcAnswers = () => {
@@ -529,7 +526,7 @@ export default function Home() {
               <div className="col-12">
                 <input type="text" name="unscrambled" className="form-control" placeholder="Type phrase here" required />
               </div>
-              <div className="col-12 mt-3">
+              <div className="col-12 mt-3 text-center">
                 <button className="btn btn-primary" type="submit">Submit</button>
               </div>
             </div>
@@ -737,6 +734,19 @@ export default function Home() {
     </Layout>
   )
 
+  const PostQuestion = () => (
+    <Layout>
+      <img alt="" className="img-center img-fluid" src={message.length ? wrongIcon : correctIcon} />
+      <h1>{message.length ? "Incorrect" : "Correct"}</h1>
+      <h5>
+        {message}
+      </h5>
+      <p>
+        The next question will load shortly.
+      </p>
+    </Layout>
+  )
+
   const ScoreDisplay = () => (
     <Layout>
       <h1>Game Over!</h1>
@@ -772,6 +782,31 @@ export default function Home() {
       <button className="btn btn-primary mb-3" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
       &nbsp;&nbsp;
       <a className="btn btn-primary mb-3" href="/">Restart</a>
+    </Layout>
+  )
+
+  const Final = () => (
+    <Layout>
+      <form onSubmit={submitFinal}>
+      <div className="captcha">
+        <div className="spinner">
+          <label>
+            <input type="checkbox" required />
+            <span className="checkmark"><span>&nbsp;</span></span>
+          </label>
+        </div>
+        <div className="text">
+          I'm a safe rider
+        </div>
+        <div className="logo">
+          <img alt="" src="https://forum.nox.tv/core/index.php?media/9-recaptcha-png/"/>
+          
+        </div>
+      </div>
+      <div className="col-12 mt-3">
+        <button className="btn btn-primary" type="submit">Submit</button>
+      </div>
+      </form>
     </Layout>
   )
 
@@ -846,6 +881,14 @@ export default function Home() {
 
     case "LEADERBOARD":
       content = <Leaderboard limit={30} />
+      break;
+
+    case "POSTQUESTION":
+      content = <PostQuestion />
+      break;
+
+    case "FINAL":
+      content = <Final />
       break;
     
     default:
