@@ -147,7 +147,7 @@ export default function Home() {
     setFourth(answer)
     let message = ""
     if(answer !== ANSWERS.fourth) {
-      message = "All Bolt rides are tracked and saved so that we know where yor ride was at every point of the trip"
+      message = "All Bolt rides are tracked and saved so that we know where your ride was at every point of the trip"
     }
     postQuestion(message, "FIFTH")
   }
@@ -202,7 +202,6 @@ export default function Home() {
   }
 
   const moveFeedbackCursor = (index) => {
-    console.log(sixthFormRefs);
     if (sixthFormRefs.length > (index + 1)) {
       sixthFormRefs[index + 1].focus();
     }
@@ -431,10 +430,12 @@ export default function Home() {
 
   const FirstQuestion = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        Your ride is here!
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          Your ride is here!
+        </h1>
+      </div>
 
       <div className="row">
         <div className="col-md-6 mb-3">
@@ -470,10 +471,12 @@ export default function Home() {
 
   const FirstQuestionB = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        Your ride is here!
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          Your ride is here!
+        </h1>
+      </div>
 
       <div className="row">
         <div className="col-md-6 mb-3">
@@ -508,20 +511,28 @@ export default function Home() {
 
   const SecondQuestion = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        Your trip has begun.
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          Your trip has begun.
+        </h1>
+      </div>
 
       <div className="row text-left">
         <div className="col-12">
           <h5>Take your loved ones with you on your journey.</h5>
           <h5>Unscramble the letters to find out how:</h5>
-          <h1 className="scrambled-letters">
+          <h1 className="scrambled-letters d-none d-md-block">
             <span>R</span><span>E</span><span>S</span><span>H</span><span>A</span>
             &nbsp;&nbsp;&nbsp;
             <span>R</span><span>U</span><span>Y</span><span>O</span>
             &nbsp;&nbsp;&nbsp;
+            <span>E</span><span>A</span><span>T</span></h1>
+          <h1 className="scrambled-letters d-md-none">
+            <span>R</span><span>E</span><span>S</span><span>H</span><span>A</span>
+            <br />
+            <span>R</span><span>U</span><span>Y</span><span>O</span>
+            <br />
             <span>E</span><span>A</span><span>T</span></h1>
           <form onSubmit={submitUnscrambled}>
             <div className="row">
@@ -541,10 +552,12 @@ export default function Home() {
 
   const SOSQuestion = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        You're on your way to your destination
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          You're on your way to your destination
+        </h1>
+      </div>
 
       <div className="row">
         <div className="col-12">
@@ -613,10 +626,12 @@ export default function Home() {
 
   const FourthQuestion = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        You’re on your way to your destination.
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          You’re on your way to your destination.
+        </h1>
+      </div>
 
       <div className="row">
         <div className="col-12">
@@ -638,10 +653,12 @@ export default function Home() {
 
   const FifthQuestion = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        You’re on your way to your destination.
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          You’re on your way to your destination.
+        </h1>
+      </div>
 
       <div className="row">
         <div className="col-12">
@@ -663,10 +680,12 @@ export default function Home() {
 
   const SixthQuestion = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        Your ride is over but you can help us make sure future trips are better by leaving feedback after each trip.
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          Your ride is over but you can help us make sure future trips are better by leaving feedback after each trip.
+        </h1>
+      </div>
 
       <div className="row">
         <div className="col-12">
@@ -682,12 +701,11 @@ export default function Home() {
             }
           </div>
             <form onSubmit={submitFeedbackOrder}>
-              <div className="row">
-                <div className="col-12">
+              <div className="row feedbackOrder-row">
                   {
                     SIXTH_OPTIONS.map((option, key) => (
                       <input 
-                        type="text"
+                        type="number"
                         ref={(ref) => sixthFormRefs[key] = ref} 
                         name={`feedbackOrder${key}`} 
                         className="form-control feedbackOrder-input" 
@@ -697,6 +715,7 @@ export default function Home() {
                       />
                     ))
                   }
+                <div className="col-12">
                 </div>
                 <div className="col-12 mt-3">
                   <button className="btn btn-primary" type="submit">Submit</button>
@@ -711,10 +730,12 @@ export default function Home() {
 
   const InsuranceQuestion = () => (
     <Layout>
-      <h1 className="question-number">{questionNumber}</h1>
-      <h1 className="question-text">
-        Bolt trip Insurance in {geo.country} is called
-      </h1>
+      <div className="my-3 d-flex align-items-center">
+        <h1 className="question-number">{questionNumber}</h1>
+        <h1 className="question-text">
+          Bolt trip Insurance in {geo.country} is called
+        </h1>
+      </div>
 
       <div className="row text-left">
         <div className="col-12">
