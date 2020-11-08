@@ -195,7 +195,7 @@ export default function Home() {
 
   const submitFinal = (e) => {
     e.preventDefault()
-    endGame("You've answered all questions! You win!")
+    endGame("Congratulations, you're a safe rider!")
     return
   }
 
@@ -754,9 +754,9 @@ export default function Home() {
       <h5>
         Your score is {score}
       </h5>
-      <h5>
+      <p>
         Submit your name and social media handle to join the leaderboard and download your certificate
-      </h5>
+      </p>
       <form onSubmit={submitNameAndDownloadCertificate}>
         <div className="row">
           <div className="col-12 mb-3">
