@@ -1,6 +1,9 @@
 import React, { useState, useLayoutEffect } from 'react'
 import { saveAs } from 'file-saver';
 import boltApp from './bolt-app.png'
+import boltApp2 from './bolt-app2.png'
+import boltApp3 from './bolt-app3.png'
+import boltApp4 from './bolt-app4.png'
 import secure from './secure.png'
 import supported from './supported.png'
 import verified from './verified.png'
@@ -20,22 +23,6 @@ import car13 from './cars/13.png'
 import car14 from './cars/14.png'
 import car15 from './cars/15.png'
 import car16 from './cars/16.png'
-import driver1 from './drivers/1.png'
-import driver2 from './drivers/2.png'
-import driver3 from './drivers/3.png'
-import driver4 from './drivers/4.png'
-import driver5 from './drivers/5.png'
-import driver6 from './drivers/6.png'
-import driver7 from './drivers/7.png'
-import driver8 from './drivers/8.png'
-import driver9 from './drivers/9.png'
-import driver10 from './drivers/10.png'
-import driver11 from './drivers/11.png'
-import driver12 from './drivers/12.png'
-import driver13 from './drivers/13.png'
-import driver14 from './drivers/14.png'
-import driver15 from './drivers/15.png'
-import driver16 from './drivers/16.png'
 import accident from './sos/accident.png'
 import danger from './sos/danger.png'
 import music from './sos/music.png'
@@ -54,8 +41,7 @@ export default function Home() {
   // const [ error,setError ] = useState("")
   const [ image,setImage ] = useState("")
   const [ questionNumber, setQuestionNumber ] = useState(1)
-  const [ car,setCar ] = useState(-1)
-  const [ driver,setDriver ] = useState(-1)
+  const [ carAndDriver,setCarAndDriver ] = useState([])
   const [ unscrambled,setUnscrambled ] = useState("")
   const [ SOS,setSOS ] = useState([])
   const [ fourth, setFourth ] = useState(-1)
@@ -66,9 +52,21 @@ export default function Home() {
   const [ message, setMessage ] = useState("")
   const [ started, setStarted ] = useState(false)
   const [ time, setTime ] = useState((new Date()).getTime() + (8 * 60000))
+  const [carsAndDriversIndex, setCarsAndDriversIndex] = useState(-1)
 
-  console.log(geo);
-  console.log(setTime);
+  const carsAndDriversScreens = [
+    boltApp,
+    boltApp2,
+    boltApp3,
+    boltApp4
+  ]
+
+  const carsAndDriversAnswers = [
+    [6,9],
+    [7,8],
+    [0,13],
+    [0,2]
+  ]
 
   useLayoutEffect(() => {
     fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
@@ -98,26 +96,15 @@ export default function Home() {
     }, timing)
   }
 
-  const submitDriver = (e) => {
+  const submitCarAndDriver = (e) => {
     e.preventDefault()
-    let answer = parseInt(e.target.driver.value);
-    setDriver(answer)
+    let selected = Array.from(e.target.carAndDriver).filter(el => el.checked).map(el => parseInt(el.value))
+    setCarAndDriver(selected)
     let message = ""
-    if(answer !== ANSWERS.driver) {
-      message = "Your driver's picture can be seen on the order progress screen in your app immediately your request is accepted"
+    if (JSON.stringify(selected) !== JSON.stringify(ANSWERS.carAndDriver)) {
+      message = "Your driver's picture and your ride's plate number can be seen on the order progress screen in your app immediately your request is accepted"
     }
     postQuestion(message, "SECOND")
-  }
-
-  const submitCar = (e) => {
-    e.preventDefault()
-    let answer = parseInt(e.target.car.value)
-    setCar(answer)
-    let message = ""
-    if(answer !== ANSWERS.car) {
-      message = "Your ride's number plate is visible on the order progress screen in your app immediately your request is accepted"
-    }
-    postQuestion(message, "FIRST-B")
   }
 
   const submitUnscrambled = (e) => {
@@ -210,8 +197,7 @@ export default function Home() {
   const sixthFormRefs = []
 
   const ANSWERS = {
-    car: 3,
-    driver: 6,
+    carAndDriver: carsAndDriversAnswers[carsAndDriversIndex],
     unscrambled: "SHARE YOUR ETA",
     SOS: [0,1],
     fourth: 0,
@@ -220,7 +206,7 @@ export default function Home() {
     insurance: "BOLT TRIP PROTECTION",
   }
 
-  const CARS = [
+  const CARS_DRIVERS = [
     car1,
     car2,
     car3,
@@ -237,25 +223,6 @@ export default function Home() {
     car14,
     car15,
     car16
-  ]
-
-  const DRIVERS = [
-    driver1,
-    driver2,
-    driver3,
-    driver4,
-    driver5,
-    driver6,
-    driver7,
-    driver8,
-    driver9,
-    driver10,
-    driver11,
-    driver12,
-    driver13,
-    driver14,
-    driver15,
-    driver16
   ]
 
   const SOS_OPTIONS = [
@@ -302,11 +269,8 @@ export default function Home() {
 
   const calcAnswers = () => {
     let score = 0
-    if (car === ANSWERS.car) {
-      score += 10
-    }
-    if (driver === ANSWERS.driver) {
-      score += 10
+    if (JSON.stringify(carAndDriver) === JSON.stringify(ANSWERS.carAndDriver)) {
+      score += 20
     }
     if (unscrambled === ANSWERS.unscrambled) {
       score += 10
@@ -422,7 +386,7 @@ export default function Home() {
         advantage of all our safety features by solving as many
         CAPTCHAs as possible?
       </p>
-      <button className="btn btn-primary" onClick={(e) => {setStatus("FIRST"); setStarted(true)}}>Get started</button>
+      <button className="btn btn-primary" onClick={(e) => {setCarsAndDriversIndex(Math.floor(Math.random() * Math.floor(3))); setTime((new Date()).getTime() + (8 * 60000)); setStatus("FIRST"); setStarted(true)}}>Get started</button>
       &nbsp;&nbsp;
       <button className="btn btn-primary" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
     </Layout>
@@ -439,60 +403,20 @@ export default function Home() {
 
       <div className="row">
         <div className="col-md-6 mb-3">
-          <img src={boltApp} className="img-fluid" alt="Your bolt ride" />
+          <img src={carsAndDriversScreens[carsAndDriversIndex]} className="img-fluid" alt="Your bolt ride" />
         </div>
         <div className="col-md-6">
-          <h5>A. Find your driver's car</h5>
-          <p>Click the image that has your driver's car and click submit</p>
-          <p>Look out for the plate number</p>
-          <form onSubmit={submitCar}>
+          <h5>Find your driver and your ride</h5>
+          <p>Click the images that have your driver and their car respectively and click submit</p>
+          <p>Look out for your driver's face and the plate number</p>
+          <form onSubmit={submitCarAndDriver}>
             <div className="row no-gutters">
             {
-              CARS.map((car, key) => (
+              CARS_DRIVERS.map((car, key) => (
                 <div key={key} className="col-3">
                   <label className="pic-select-label check">
                     <img src={car} className="img-fluid" alt="" />
-                    <input type="radio" name="car" value={key} required />
-                    <span className="checkmark"></span>
-                  </label>
-                </div>
-              ))
-            }
-              <div className="col-12 mt-3">
-                <button className="btn btn-primary" type="submit">Submit</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      
-    </Layout>
-  )
-
-  const FirstQuestionB = () => (
-    <Layout>
-      <div className="my-3 d-flex align-items-center">
-        <h1 className="question-number">{questionNumber}</h1>
-        <h1 className="question-text">
-          Your ride is here!
-        </h1>
-      </div>
-
-      <div className="row">
-        <div className="col-md-6 mb-3">
-          <img src={boltApp} className="img-fluid" alt="Your bolt ride" />
-        </div>
-        <div className="col-md-6">
-          <h5>A. Find your driver</h5>
-          <p>Click the image that has your driver and click submit</p>
-          <form onSubmit={submitDriver}>
-            <div className="row no-gutters">
-            {
-              DRIVERS.map((driver, key) => (
-                <div key={key} className="col-3">
-                  <label className="pic-select-label check">
-                    <img src={driver} className="img-fluid" alt="" />
-                    <input type="radio" name="driver" value={key} required />
+                    <input type="checkbox" name="carAndDriver" value={key} />
                     <span className="checkmark"></span>
                   </label>
                 </div>
@@ -853,10 +777,6 @@ export default function Home() {
     
     case "FIRST":
       content = <FirstQuestion />
-      break;
-    
-    case "FIRST-B":
-      content = <FirstQuestionB />
       break;
     
     case "SECOND":
