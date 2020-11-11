@@ -1,5 +1,6 @@
 import React, { useState, useLayoutEffect } from 'react'
 import { saveAs } from 'file-saver';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import boltApp from './bolt-app.png'
 import boltApp2 from './bolt-app2.png'
 import boltApp3 from './bolt-app3.png'
@@ -37,7 +38,8 @@ import wrongIcon from './close.png'
 
 export default function Home() {
   const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG", country: "Nigeria"})
-  const [ status,setStatus ] = useState("INITIAL")
+  // const [ status,setStatus ] = useState("INITIAL")
+  const [ status,setStatus ] = useState("START")
   // const [ error,setError ] = useState("")
   const [ image,setImage ] = useState("")
   const [ questionNumber, setQuestionNumber ] = useState(1)
@@ -46,6 +48,14 @@ export default function Home() {
   const [ SOS,setSOS ] = useState([])
   const [ fourth, setFourth ] = useState(-1)
   const [ fifth, setFifth ] = useState(-1)
+  const [ sixthQuestionOptions, setSixthQuestionOptions ] = useState([
+    "Go to the support tab",
+    "Choose the problem topic",
+    "Submit",
+    "Click on “Get help” and describe your issue",
+    "Open your Bolt app",
+    "Select the trip (recent trip or another)"
+  ])
   const [ feedbackOrder, setFeedbackOrder ] = useState([])
   const [ insurance,setInsurance ] = useState("")
   const [ score, setScore ] = useState(0)
@@ -69,6 +79,7 @@ export default function Home() {
   ]
 
   useLayoutEffect(() => {
+    // fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
     fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
       method: 'GET'
     })
@@ -89,7 +100,7 @@ export default function Home() {
     setStatus("POSTQUESTION")
     setQuestionNumber(questionNumber+1)
 
-    let timing = message.length ? 5000 : 3000
+    let timing = message.length ? 4000 : 1500
 
     setTimeout(() => {
       setStatus(status)
@@ -102,18 +113,18 @@ export default function Home() {
     setCarAndDriver(selected)
     let message = ""
     if (JSON.stringify(selected) !== JSON.stringify(ANSWERS.carAndDriver)) {
-      message = "Your driver's picture and your ride's plate number can be seen on the order progress screen in your app immediately your request is accepted"
+      message = "Always get in the right car by confirming your driver's number plate and face in your app immediately your request is accepted"
     }
     postQuestion(message, "SECOND")
   }
 
   const submitUnscrambled = (e) => {
     e.preventDefault()
-    let phrase = e.target.unscrambled.value.toUpperCase()
+    let phrase = e.target.unscrambled.value.toUpperCase().trim()
     setUnscrambled(phrase)
     let message = ""
     if(phrase !== ANSWERS.unscrambled) {
-      message = "The “SHARE YOUR ETA” function allows your loved ones follow every turn on your trip in real time from any internet enabled device"
+      message = "Using the “Share Ride Info” function allows your loved ones see the driver and car details in full and follow you on your trip in real time. "
     }
     let status = geo.country === "Kenya" || geo.country === "South Africa" ? "SOSQUESTION" : "FOURTH"
     postQuestion(message, status)
@@ -143,7 +154,7 @@ export default function Home() {
     setFifth(answer)
     let message = ""
     if(answer !== ANSWERS.fifth) {
-      message = "Your ratings help us maintain standards on the Bolt platform. They are anonymous to your driver so it is important that you give your honest feedback"
+      message = "Your ratings and feedback helps us improve future journeys. They are anonymous to your driver, so it is important that you give your honest feedback."
     }
     postQuestion(message, "SIXTH")
   }
@@ -172,11 +183,11 @@ export default function Home() {
 
   const submitInsurance = (e) => {
     e.preventDefault()
-    let phrase = e.target.insurance.value.toUpperCase()
+    let phrase = e.target.insurance.value.toUpperCase().trim()
     setInsurance(phrase)
     let message = ""
     if(phrase !== ANSWERS.insurance) {
-      message = "“Bolt Trip Protection” covers you and your possessions on every Bolt ride"
+      message = "“Bolt Trip Protection” offers insurance cover for you and your belongings on every Bolt ride"
     }
     postQuestion(message, "FINAL")
     return
@@ -194,15 +205,60 @@ export default function Home() {
     }
   }
 
+  // a little function to help us with reordering the result
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+
+    // change background colour if dragging
+    background: isDragging ? "var(--primary-color)" : "grey",
+
+    // styles we need to apply on draggables
+    ...draggableStyle
+  });
+
+  const getListStyle = isDraggingOver => ({
+    background: isDraggingOver ? "lightgrey" : "transparent"
+  });
+
+  const onDragEnd = (result) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items = reorder(
+      sixthQuestionOptions,
+      result.source.index,
+      result.destination.index
+    );
+
+    setSixthQuestionOptions(items);
+  }
+
   const sixthFormRefs = []
 
   const ANSWERS = {
     carAndDriver: carsAndDriversAnswers[carsAndDriversIndex],
-    unscrambled: "SHARE YOUR ETA",
+    unscrambled: "SHARE RIDE INFO",
     SOS: [0,1],
     fourth: 0,
     fifth: 4,
-    feedbackOrder: [5,1,6,2,4,3],
+    feedbackOrder: [
+      "Open your Bolt app",
+      "Go to the support tab",
+      "Select the trip (recent trip or another)",
+      "Chose the problem topic and describe your issue",
+      "Submit"
+    ],
     insurance: "BOLT TRIP PROTECTION",
   }
 
@@ -258,14 +314,6 @@ export default function Home() {
       <i key={key} className="fas fa-star primary-text"></i>
     ))
   }
-  const SIXTH_OPTIONS = [
-    "Go to the support tab",
-    "Choose the problem topic",
-    "Submit",
-    "Click on “Get help” and describe your issue",
-    "Open your Bolt app",
-    "Select the trip (recent trip or another)"
-  ]
 
   const calcAnswers = () => {
     let score = 0
@@ -340,7 +388,7 @@ export default function Home() {
       }
     >
       <div className="row">
-        <div  className="col-12 animate__animated animate__fadeIn animate__slow">
+        <div  className={`col-12 ${props.animate || props.animate === null ? "animate__animated animate__fadeIn animate__slow" : ""}`}>
           {children}
         </div>
       </div>
@@ -379,7 +427,7 @@ export default function Home() {
         </div>
       </div>
       <p>
-        We believe that safety is in the little things that happen <b>before</b>, < b>during</b> and <b>after</b> every ride.
+        We're driven by safety <b>before</b>, < b>during</b> and <b>after</b> every ride.
       </p>
       <p>
         Can you prove that you’re a safety champ and can take
@@ -394,7 +442,7 @@ export default function Home() {
 
   const FirstQuestion = () => (
     <Layout>
-      <div className="my-3 d-flex align-items-center">
+      <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
           Your ride is here!
@@ -406,8 +454,8 @@ export default function Home() {
           <img src={carsAndDriversScreens[carsAndDriversIndex]} className="img-fluid" alt="Your bolt ride" />
         </div>
         <div className="col-md-6">
-          <h5>Find your driver and your ride</h5>
-          <p>Click the images that have your driver and their car respectively and click submit</p>
+          <h5>Find your driver and their car</h5>
+          <p>Click all boxes that have your driver and their car.</p>
           <p>Look out for your driver's face and the plate number</p>
           <form onSubmit={submitCarAndDriver}>
             <div className="row no-gutters">
@@ -435,7 +483,7 @@ export default function Home() {
 
   const SecondQuestion = () => (
     <Layout>
-      <div className="my-3 d-flex align-items-center">
+      <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
           Your trip has begun.
@@ -449,15 +497,15 @@ export default function Home() {
           <h1 className="scrambled-letters d-none d-md-block">
             <span>R</span><span>E</span><span>S</span><span>H</span><span>A</span>
             &nbsp;&nbsp;&nbsp;
-            <span>R</span><span>U</span><span>Y</span><span>O</span>
+            <span>D</span><span>I</span><span>R</span><span>E</span>
             &nbsp;&nbsp;&nbsp;
-            <span>E</span><span>A</span><span>T</span></h1>
+            <span>O</span><span>N</span><span>I</span><span>F</span></h1>
           <h1 className="scrambled-letters d-md-none">
             <span>R</span><span>E</span><span>S</span><span>H</span><span>A</span>
             <br />
-            <span>R</span><span>U</span><span>Y</span><span>O</span>
+            <span>D</span><span>I</span><span>R</span><span>E</span>
             <br />
-            <span>E</span><span>A</span><span>T</span></h1>
+            <span>O</span><span>N</span><span>I</span><span>F</span></h1>
           <form onSubmit={submitUnscrambled}>
             <div className="row">
               <div className="col-12">
@@ -476,7 +524,7 @@ export default function Home() {
 
   const SOSQuestion = () => (
     <Layout>
-      <div className="my-3 d-flex align-items-center">
+      <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
           You're on your way to your destination
@@ -550,7 +598,7 @@ export default function Home() {
 
   const FourthQuestion = () => (
     <Layout>
-      <div className="my-3 d-flex align-items-center">
+      <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
           You’re on your way to your destination.
@@ -577,7 +625,7 @@ export default function Home() {
 
   const FifthQuestion = () => (
     <Layout>
-      <div className="my-3 d-flex align-items-center">
+      <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
           You’re on your way to your destination.
@@ -603,8 +651,8 @@ export default function Home() {
   )
 
   const SixthQuestion = () => (
-    <Layout>
-      <div className="my-3 d-flex align-items-center">
+    <Layout animate={false}>
+      <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
           Your ride is over but you can help us make sure future trips are better by leaving feedback after each trip.
@@ -616,18 +664,42 @@ export default function Home() {
           <h5>Arrange these steps chronologically to leave feedback</h5>
           <p>We won't tell if you look at your app for these 😉</p>
           <div className="row">
-            {
-              SIXTH_OPTIONS.map((option, key) => (
-                <button key={key} className="btn btn-secondary btn-full-width">
-                  {key+1}. {option}
-                </button>
-              ))
-            }
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver)}
+                  >
+                  {
+                    sixthQuestionOptions.map((option, key) => (
+                      <Draggable key={key} draggableId={`drag-${key}`} index={key}>
+                        {(provided, snapshot) => (
+                          <div className="btn btn-secondary btn-full-width"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
+                          >
+                            {key+1}. {option}
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+        </Droppable>
+      </DragDropContext>
           </div>
             <form onSubmit={submitFeedbackOrder}>
               <div className="row feedbackOrder-row">
                   {
-                    SIXTH_OPTIONS.map((option, key) => (
+                    sixthQuestionOptions.map((option, key) => (
                       <input 
                         type="number"
                         ref={(ref) => sixthFormRefs[key] = ref} 
@@ -654,10 +726,10 @@ export default function Home() {
 
   const InsuranceQuestion = () => (
     <Layout>
-      <div className="my-3 d-flex align-items-center">
+      <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
-          Bolt trip Insurance in {geo.country} is called
+          Bolt trip insurance in {geo.country} is called
         </h1>
       </div>
 
