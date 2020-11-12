@@ -35,6 +35,7 @@ import Timer from './Timer';
 import Header from '../../Utilities/Header/Header';
 import correctIcon from './checked.png'
 import wrongIcon from './close.png'
+import SocialShare from '../../Utilities/SocialShare/SocialShare';
 
 export default function Home() {
   const [ geo,setGeo ] = useState({name: "Uche", hashtag: "NG", country: "Nigeria"})
@@ -61,6 +62,7 @@ export default function Home() {
   const [ started, setStarted ] = useState(false)
   const [ time, setTime ] = useState((new Date()).getTime() + (8 * 60000))
   const [carsAndDriversIndex, setCarsAndDriversIndex] = useState(-1)
+  const [ safeRider, setSafeRider ] = useState("")
 
   const carsAndDriversScreens = [
     boltApp,
@@ -335,12 +337,16 @@ export default function Home() {
 
     if (score <= 30) {
         setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-35.png?alt=media&token=d6991837-1eb8-4369-a881-821a819dd8f8")
+        setSafeRider("Safety So-so")
     } else if (score <= 50) {
         setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-34.png?alt=media&token=ab2608a0-35e9-4f6d-8c56-f67245d47075")
+        setSafeRider("Safety Rookie")
     } else if (score <= 80) {
         setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-33.png?alt=media&token=0b8b54e8-62cc-46a6-a75c-22d28aeb4faf")
+        setSafeRider("Safety Wiz")
     } else {
         setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-32.png?alt=media&token=add7f388-a11a-4349-b286-d418aa9186cc")
+        setSafeRider("Safety Champ")
     }
     score = time > Date.now() ? score * ( (time - Date.now())/1000 ) : score
     setScore( Math.round(score) )
@@ -371,7 +377,6 @@ export default function Home() {
             score: score
         })
     }).then(data => setStatus("SCORE_SAVED"))
-    saveImage(name)
   } 
 
   const Layout = ({children, ...props}) => (
@@ -757,11 +762,17 @@ export default function Home() {
       <h1>Game Over!</h1>
       <div dangerouslySetInnerHTML={{ __html: message }}></div>
       <h5>
-        Your score is {score}
+        Your score is {score}. You're a <span className="primary-text">{safeRider}</span>
       </h5>
       <img src={image} className="img-fluid img-center" alt="Bolt Safety Certificate" />
+      <p>Learned anything new? Share this quiz with friends so they can take advantage of Bolt’s safety toolkit.</p>
+      <SocialShare
+        url={window.location.href} 
+        text={`I'm a ${safeRider}! Take the quiz to learn about Bolt's safety features and get your safety certificate`}
+        tag="BoltProtect"
+      />
       <p>
-        Submit your name and social media handle to join the leaderboard and download your certificate
+        Submit your name and social media handle to join the leaderboard
       </p>
       <form onSubmit={submitNameAndDownloadCertificate}>
         <div className="row">
@@ -770,6 +781,10 @@ export default function Home() {
           </div>
           <div className="col-12 mb-3">
             <input type="text" name="handle" className="form-control" placeholder="Your Social Media Handle" required />
+          </div>
+          <div className="form-group form-check">
+            <input type="checkbox" className="form-check-input" id="accept" required />
+            <label className="form-check-label" htmlFor="accept">By ticking this box, I agree that Bolt can contact me regarding the results of this quiz.</label>
           </div>
           <div className="col-12">
             <button className="btn btn-primary" type="submit">Submit</button>
