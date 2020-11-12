@@ -783,6 +783,7 @@ export default function Home() {
             <input type="text" name="name" className="form-control" placeholder="Your Name" required />
           </div>
           <div className="col-12 mb-3">
+            <p>How can we contact you?</p>
             <div className="form-check form-check-inline">
               <input className="form-check-input" type="radio" name="social" id="inlineRadio1" value="Facebook" />
               <label className="form-check-label" htmlFor="inlineRadio1">Facebook</label>
