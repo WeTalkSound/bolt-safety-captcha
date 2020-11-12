@@ -49,14 +49,12 @@ export default function Home() {
   const [ fourth, setFourth ] = useState(-1)
   const [ fifth, setFifth ] = useState(-1)
   const [ sixthQuestionOptions, setSixthQuestionOptions ] = useState([
-    "Go to the support tab",
-    "Choose the problem topic",
+    "Chose the problem topic and describe your issue",
+    "Select the trip (recent trip or another)",
     "Submit",
-    "Click on “Get help” and describe your issue",
-    "Open your Bolt app",
-    "Select the trip (recent trip or another)"
+    "Go to the support tab",
+    "Open your Bolt app"
   ])
-  const [ feedbackOrder, setFeedbackOrder ] = useState([])
   const [ insurance,setInsurance ] = useState("")
   const [ score, setScore ] = useState(0)
   const [ message, setMessage ] = useState("")
@@ -79,7 +77,6 @@ export default function Home() {
   ]
 
   useLayoutEffect(() => {
-    // fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
     fetch(`https://services.etin.space/bolt-campaign/api/gratitude/location.php`, {
       method: 'GET'
     })
@@ -161,18 +158,13 @@ export default function Home() {
 
   const submitFeedbackOrder = (e) => {
     e.preventDefault()
-    let elements = Array.from(e.target.elements)
-    let fbOrder = elements.filter(element => element.name.includes("feedbackOrder")).map(element => parseInt(element.value))
-    setFeedbackOrder(fbOrder)
     let message = ""
     const isWrongOrder = (item, index) => {
-      console.log(item, fbOrder[index])
-      if(item === fbOrder[index]){
+      if(item === sixthQuestionOptions[index]){
         return false
       }
       return true
     }
-    console.log(ANSWERS.feedbackOrder.some(isWrongOrder));
     
     if (ANSWERS.feedbackOrder.some(isWrongOrder)) {
       message = "Our Customer Support team is always on hand to respond to your comments so leaving feedback on the trip in question via in-app support is usually the quickest way to reach us"
@@ -199,11 +191,11 @@ export default function Home() {
     return
   }
 
-  const moveFeedbackCursor = (index) => {
-    if (sixthFormRefs.length > (index + 1)) {
-      sixthFormRefs[index + 1].focus();
-    }
-  }
+  // const moveFeedbackCursor = (index) => {
+  //   if (sixthFormRefs.length > (index + 1)) {
+  //     sixthFormRefs[index + 1].focus();
+  //   }
+  // }
 
   // a little function to help us with reordering the result
   const reorder = (list, startIndex, endIndex) => {
@@ -244,7 +236,7 @@ export default function Home() {
     setSixthQuestionOptions(items);
   }
 
-  const sixthFormRefs = []
+  // const sixthFormRefs = []
 
   const ANSWERS = {
     carAndDriver: carsAndDriversAnswers[carsAndDriversIndex],
@@ -333,15 +325,23 @@ export default function Home() {
       score += 10
     }
     ANSWERS.feedbackOrder.forEach((item, index) => {
-      if(item === feedbackOrder[index]){
-        score += 2.5
+      if(item === sixthQuestionOptions[index]){
+        score += 4
       }
     })
     if (insurance === ANSWERS.insurance) {
       score += 20
     }
 
-    setImage(`https://services.etin.space/bolt-campaign/api/safety-captcha/?score=${score}&name=`)
+    if (score <= 30) {
+        setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-35.png?alt=media&token=d6991837-1eb8-4369-a881-821a819dd8f8")
+    } else if (score <= 50) {
+        setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-34.png?alt=media&token=ab2608a0-35e9-4f6d-8c56-f67245d47075")
+    } else if (score <= 80) {
+        setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-33.png?alt=media&token=0b8b54e8-62cc-46a6-a75c-22d28aeb4faf")
+    } else {
+        setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-32.png?alt=media&token=add7f388-a11a-4349-b286-d418aa9186cc")
+    }
     score = time > Date.now() ? score * ( (time - Date.now())/1000 ) : score
     setScore( Math.round(score) )
   }
@@ -378,7 +378,7 @@ export default function Home() {
     <div 
       className={
         `container${props.middle ? 
-          " d-flex justify-content-center align-items-center" : ""}`
+          " d-flex justify-content-center align-items-center" : ""}${props.textCenter ? " text-center" : ""}`
       } 
       style={
         {
@@ -396,7 +396,7 @@ export default function Home() {
   ) 
 
   const Landing = () => (
-    <Layout>
+    <Layout textCenter>
       <div className="row text-left">
         <div className="col-4 landing-col">
           <div>
@@ -470,7 +470,7 @@ export default function Home() {
                 </div>
               ))
             }
-              <div className="col-12 mt-3">
+              <div className="col-12 mt-3 text-center">
                 <button className="btn btn-primary" type="submit">Submit</button>
               </div>
             </div>
@@ -511,7 +511,7 @@ export default function Home() {
               <div className="col-12">
                 <input type="text" name="unscrambled" className="form-control" placeholder="Type phrase here" required />
               </div>
-              <div className="col-12 mt-3 text-center">
+              <div className="col-12 mt-3 text-center text-center">
                 <button className="btn btn-primary" type="submit">Submit</button>
               </div>
             </div>
@@ -662,6 +662,7 @@ export default function Home() {
       <div className="row">
         <div className="col-12">
           <h5>Arrange these steps chronologically to leave feedback</h5>
+          <p>Hold and drag each option to rearrange it</p>
           <p>We won't tell if you look at your app for these 😉</p>
           <div className="row">
             <DragDropContext onDragEnd={onDragEnd}>
@@ -697,23 +698,8 @@ export default function Home() {
       </DragDropContext>
           </div>
             <form onSubmit={submitFeedbackOrder}>
-              <div className="row feedbackOrder-row">
-                  {
-                    sixthQuestionOptions.map((option, key) => (
-                      <input 
-                        type="number"
-                        ref={(ref) => sixthFormRefs[key] = ref} 
-                        name={`feedbackOrder${key}`} 
-                        className="form-control feedbackOrder-input" 
-                        onChange={(e) => moveFeedbackCursor(key)} 
-                        maxLength={1}
-                        required
-                      />
-                    ))
-                  }
-                <div className="col-12">
-                </div>
-                <div className="col-12 mt-3">
+              <div className="row">
+                <div className="col-12 mt-3 text-center">
                   <button className="btn btn-primary" type="submit">Submit</button>
                 </div>
               </div>
@@ -742,7 +728,7 @@ export default function Home() {
               <div className="col-12">
                 <input type="text" name="insurance" className="form-control" placeholder="Type phrase here" required />
               </div>
-              <div className="col-12 mt-3 text-center">
+              <div className="col-12 mt-3 text-center text-center">
                 <button className="btn btn-primary" type="submit">Submit</button>
               </div>
             </div>
@@ -754,7 +740,7 @@ export default function Home() {
   )
 
   const PostQuestion = () => (
-    <Layout>
+    <Layout textCenter>
       <img alt="" className="img-center img-fluid" src={message.length ? wrongIcon : correctIcon} />
       <h1>{message.length ? "Incorrect" : "Correct"}</h1>
       <h5>
@@ -773,6 +759,7 @@ export default function Home() {
       <h5>
         Your score is {score}
       </h5>
+      <img src={image} className="img-fluid img-center" alt="Bolt Safety Certificate" />
       <p>
         Submit your name and social media handle to join the leaderboard and download your certificate
       </p>
@@ -822,7 +809,7 @@ export default function Home() {
           
         </div>
       </div>
-      <div className="col-12 mt-3">
+      <div className="col-12 mt-3 text-center">
         <button className="btn btn-primary" type="submit">Submit</button>
       </div>
       </form>
@@ -918,7 +905,7 @@ export default function Home() {
         }
       </Header>
       <div className="col-12 justify-content-center">
-        <div className="text-center justify-content-center">
+        <div className="justify-content-center">
           {content}
         </div>
       </div>

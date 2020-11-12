@@ -96,6 +96,7 @@ a:hover a:active {
   border: solid 5px var(--primary-color);
   border-radius: 50%;
   display: block;
+  text-align: center;
 }
 
 .question-text {
