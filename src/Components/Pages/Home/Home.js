@@ -782,7 +782,7 @@ export default function Home() {
           <div className="col-12 mb-3">
             <input type="text" name="name" className="form-control" placeholder="Your Name" required />
           </div>
-          <div className="col-6 mb-3">
+          <div className="col-12 mb-3">
             <div className="form-check form-check-inline">
               <input className="form-check-input" type="radio" name="social" id="inlineRadio1" value="Facebook" />
               <label className="form-check-label" htmlFor="inlineRadio1">Facebook</label>
@@ -796,7 +796,7 @@ export default function Home() {
               <label className="form-check-label" htmlFor="inlineRadio3">Instagram</label>
             </div>
           </div>
-          <div className="col-6 mb-3">
+          <div className="col-12 mb-3">
             <input type="text" name="handle" className="form-control" placeholder="Your Social Media Handle" required />
           </div>
           <div className="form-group form-check">
