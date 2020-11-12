@@ -694,7 +694,7 @@ export default function Home() {
                               provided.draggableProps.style
                             )}
                           >
-                            {key+1}. {option}
+                            {option}
                           </div>
                         )}
                       </Draggable>
