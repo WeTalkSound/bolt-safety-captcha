@@ -11,7 +11,7 @@ export default class Leaderboard extends Component {
 
     componentDidMount() {
         console.log("Showing Scores")
-        fetch("https://bolt-campaigns.firebaseio.com/bolt-safety-captcha/high-scores.json?orderBy=%22score%22&limitToLast=" + this.props.limit, {
+        fetch(`https://us-central1-bolt-campaigns.cloudfunctions.net/boltCaptchaFilterHighScores?limit=${this.props.limit}&country=${this.props.country}`, {
             method: 'GET'
         })
             .then(res => res.json())

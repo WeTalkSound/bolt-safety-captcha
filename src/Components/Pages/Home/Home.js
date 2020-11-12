@@ -72,10 +72,10 @@ export default function Home() {
   ]
 
   const carsAndDriversAnswers = [
-    [6,9],
-    [7,8],
-    [0,13],
-    [0,2]
+    [7,11,15,14],
+    [12,13],
+    [0,1,4,8],
+    [0,1,4,5,7]
   ]
 
   useLayoutEffect(() => {
@@ -473,7 +473,7 @@ export default function Home() {
                   <label className="pic-select-label check">
                     <img src={car} className="img-fluid" alt="" />
                     <input type="checkbox" name="carAndDriver" value={key} />
-                    <span className="checkmark"></span>
+                    <span className="checkmark checkmark-pic"></span>
                   </label>
                 </div>
               ))
@@ -915,7 +915,7 @@ export default function Home() {
       break;
 
     case "LEADERBOARD":
-      content = <Leaderboard limit={30} />
+      content = <Leaderboard limit={30} country={geo.country} />
       break;
 
     case "POSTQUESTION":
