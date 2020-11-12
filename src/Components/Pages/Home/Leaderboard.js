@@ -33,6 +33,7 @@ export default class Leaderboard extends Component {
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Country</th>
+                            <th scope="col">Category</th>
                             <th scope="col">Score</th>
                         </tr>
                     </thead>
@@ -44,6 +45,7 @@ export default class Leaderboard extends Component {
                                         <th scope="row">{ key + 1 }</th>
                                         <td>{ item.name }</td>
                                         <td>{ item.country }</td>
+                                        <td>{ item.category }</td>
                                         <td>{ item.score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }</td>
                                     </tr>
                                 )

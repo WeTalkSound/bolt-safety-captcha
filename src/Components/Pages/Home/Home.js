@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from 'react'
-import { saveAs } from 'file-saver';
+// import { saveAs } from 'file-saver';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import boltApp from './bolt-app.png'
 import boltApp2 from './bolt-app2.png'
@@ -90,9 +90,9 @@ export default function Home() {
       })
   }, [])
 
-  const saveImage = (name) => {
-    saveAs(image + name, `bolt-protect-${Date.now().toString(16)}.png`)
-  }
+  // const saveImage = (name) => {
+  //   saveAs(image + name, `bolt-protect-${Date.now().toString(16)}.png`)
+  // }
 
   const postQuestion = (message, status) => {
     setMessage(message)
@@ -373,6 +373,7 @@ export default function Home() {
         body: JSON.stringify({
             name: name,
             country: geo.country,
+            category: safeRider,
             handle: handle,
             score: score
         })
