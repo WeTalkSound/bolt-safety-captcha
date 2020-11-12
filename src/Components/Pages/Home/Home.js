@@ -363,6 +363,7 @@ export default function Home() {
     e.preventDefault()
     let name = e.target.name.value
     let handle = e.target.handle.value
+    let social = e.target.social.value
 
     fetch("https://bolt-campaigns.firebaseio.com/bolt-safety-captcha/high-scores.json", {
         method: 'POST',
@@ -374,6 +375,7 @@ export default function Home() {
             name: name,
             country: geo.country,
             category: safeRider,
+            socialMedia: social,
             handle: handle,
             score: score
         })
@@ -780,7 +782,21 @@ export default function Home() {
           <div className="col-12 mb-3">
             <input type="text" name="name" className="form-control" placeholder="Your Name" required />
           </div>
-          <div className="col-12 mb-3">
+          <div className="col-6 mb-3">
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="social" id="inlineRadio1" value="Facebook" />
+              <label className="form-check-label" htmlFor="inlineRadio1">Facebook</label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="social" id="inlineRadio2" value="Twitter" />
+              <label className="form-check-label" htmlFor="inlineRadio2">Twitter</label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input className="form-check-input" type="radio" name="social" id="inlineRadio3" value="Instagram" />
+              <label className="form-check-label" htmlFor="inlineRadio3">Instagram</label>
+            </div>
+          </div>
+          <div className="col-6 mb-3">
             <input type="text" name="handle" className="form-control" placeholder="Your Social Media Handle" required />
           </div>
           <div className="form-group form-check">
