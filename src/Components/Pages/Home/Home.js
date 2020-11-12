@@ -753,7 +753,7 @@ export default function Home() {
   )
 
   const ScoreDisplay = () => (
-    <Layout>
+    <Layout textCenter>
       <h1>Game Over!</h1>
       <div dangerouslySetInnerHTML={{ __html: message }}></div>
       <h5>
@@ -780,7 +780,7 @@ export default function Home() {
   )
 
   const ScoreSaved = () => (
-    <Layout>
+    <Layout textCenter>
       <h1>Your score has been saved!</h1>
       <h5>
         We pick the top members of the leaderboard, so keep playing sharing to stand a bigger chance!
@@ -792,7 +792,7 @@ export default function Home() {
   )
 
   const Final = () => (
-    <Layout>
+    <Layout textCenter>
       <form onSubmit={submitFinal}>
       <div className="captcha">
         <div className="spinner">
