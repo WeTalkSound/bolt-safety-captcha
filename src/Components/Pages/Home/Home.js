@@ -79,15 +79,7 @@ export default function Home() {
         required: true
       },
       {
-        index: 10,
-        required: false
-      },
-      {
-        index: 14,
-        required: false
-      },
-      {
-        index: 13,
+        index: 7,
         required: true
       }
     ],
@@ -103,42 +95,30 @@ export default function Home() {
     ],
     [
       {
-        index: 0,
-        required: true
-      },
-      {
-        index: 1,
-        required: true
-      },
-      {
-        index: 4,
+        index: 12,
         required: false
       },
       {
-        index: 8,
+        index: 13,
+        required: true
+      },
+      {
+        index: 14,
         required: true
       }
     ],
     [
       {
-        index: 0,
-        required: false
-      },
-      {
-        index: 1,
-        required: false
-      },
-      {
-        index: 4,
+        index: 8,
         required: true
       },
       {
-        index: 5,
-        required: false
+        index: 9,
+        required: true
       },
       {
-        index: 7,
-        required: true
+        index: 10,
+        required: false
       }
     ]
   ]
