@@ -72,10 +72,74 @@ export default function Home() {
   ]
 
   const carsAndDriversAnswers = [
-    [7,11,15,14],
-    [12,13],
-    [0,1,4,8],
-    [0,1,4,5,7]
+    [
+      {
+        index: 6, 
+        required: true
+      },
+      {
+        index: 10,
+        required: false
+      },
+      {
+        index: 14,
+        required: false
+      },
+      {
+        index: 13,
+        required: true
+      }
+    ],
+    [
+      {
+        index: 11,
+        required: true
+      },
+      {
+        index: 12,
+        required: true
+      }
+    ],
+    [
+      {
+        index: 0,
+        required: true
+      },
+      {
+        index: 1,
+        required: true
+      },
+      {
+        index: 4,
+        required: false
+      },
+      {
+        index: 8,
+        required: true
+      }
+    ],
+    [
+      {
+        index: 0,
+        required: false
+      },
+      {
+        index: 1,
+        required: false
+      },
+      {
+        index: 4,
+        required: true
+      },
+      {
+        index: 5,
+        required: false
+      },
+      {
+        index: 7,
+        required: true
+      }
+    ]
   ]
 
   useLayoutEffect(() => {
@@ -111,7 +175,9 @@ export default function Home() {
     let selected = Array.from(e.target.carAndDriver).filter(el => el.checked).map(el => parseInt(el.value))
     setCarAndDriver(selected)
     let message = ""
-    if (JSON.stringify(selected) !== JSON.stringify(ANSWERS.carAndDriver)) {
+    let required = ANSWERS.carAndDriver.filter(cd => cd.required).map(cd => cd.index)
+
+    if (required.some(item => selected.indexOf(item) === -1)) {
       message = "Always get in the right car by confirming your driver's number plate and face in your app immediately your request is accepted"
     }
     postQuestion(message, "SECOND")
@@ -311,9 +377,14 @@ export default function Home() {
 
   const calcAnswers = () => {
     let score = 0
-    if (JSON.stringify(carAndDriver) === JSON.stringify(ANSWERS.carAndDriver)) {
+    
+    let requiredCars = ANSWERS.carAndDriver.filter(cd => cd.required).map(cd => cd.index)
+    
+    if (requiredCars.every(item => carAndDriver.indexOf(item) !== -1)) {
       score += 20
+      score -= carAndDriver.length - ANSWERS.carAndDriver.map(cd => cd.index).length
     }
+
     if (unscrambled === ANSWERS.unscrambled) {
       score += 10
     }
