@@ -21,19 +21,20 @@ export default class Leaderboard extends Component {
                 scores = Object.values(scores).sort((a,b) => (a.score < b.score) ? 1: -1)
                 this.setState({ scores, error: "" })
             })
-            .catch(error => this.setState({ error: "There was an error fetching high scores. Please try again." }))
+            // .catch(error => this.setState({ error: "There was an error fetching high scores. Please try again." }))
     }
     render() {
         const error = <div className="col-12">{this.state.error}</div>
         const scores = (
             <div className="col-12">
-                <table class="table">
+                <table className="table">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Country</th>
                             <th scope="col">Category</th>
+                            <th scope="col">Time</th>
                             <th scope="col">Score</th>
                         </tr>
                     </thead>
@@ -46,6 +47,7 @@ export default class Leaderboard extends Component {
                                         <td>{ item.name }</td>
                                         <td>{ item.country }</td>
                                         <td>{ item.category }</td>
+                                        <td>{ item.time }</td>
                                         <td>{ item.score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }</td>
                                     </tr>
                                 )

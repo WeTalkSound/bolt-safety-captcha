@@ -63,6 +63,7 @@ export default function Home() {
   const [ time, setTime ] = useState((new Date()).getTime() + (8 * 60000))
   const [carsAndDriversIndex, setCarsAndDriversIndex] = useState(-1)
   const [ safeRider, setSafeRider ] = useState("")
+  const [ timeLeft, setTimeLeft ] = useState("00:00")
 
   const carsAndDriversScreens = [
     boltApp,
@@ -419,8 +420,20 @@ export default function Home() {
         setImage("https://firebasestorage.googleapis.com/v0/b/bolt-campaigns.appspot.com/o/bolt-safety-captcha%2FSafety%20captcha%20site2%20web-32.png?alt=media&token=add7f388-a11a-4349-b286-d418aa9186cc")
         setSafeRider("Safety Champ")
     }
-    score = time > Date.now() ? score * ( (time - Date.now())/1000 ) : score
+    let timeLeft = (time - Date.now())/1000
+
+    score = time > Date.now() ? score * ( timeLeft ) : score
     setScore( Math.round(score) )
+
+    let minutes = 0
+    let seconds = 0
+    if (timeLeft >= 60) {
+        minutes = Math.floor(timeLeft/60)
+        timeLeft -= minutes * 60
+    }
+    seconds = Math.floor(timeLeft)
+
+    setTimeLeft(`${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`)
   }
 
   const endGame = (message) => {
@@ -447,6 +460,7 @@ export default function Home() {
             country: geo.country,
             category: safeRider,
             socialMedia: social,
+            time: timeLeft,
             handle: handle,
             score: score
         })
