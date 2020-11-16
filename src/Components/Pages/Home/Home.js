@@ -5,9 +5,9 @@ import boltApp from './bolt-app.png'
 import boltApp2 from './bolt-app2.png'
 import boltApp3 from './bolt-app3.png'
 import boltApp4 from './bolt-app4.png'
-import secure from './secure.png'
-import supported from './supported.png'
-import verified from './verified.png'
+import during from './during.png'
+import after from './after.png'
+import before from './before.png'
 import car1 from './cars/1.png'
 import car2 from './cars/2.png'
 import car3 from './cars/3.png'
@@ -35,6 +35,10 @@ import Timer from './Timer';
 import Header from '../../Utilities/Header/Header';
 import correctIcon from './checked.png'
 import wrongIcon from './close.png'
+import logoDefault from './logo.png'
+import logo1 from './logo-1.png'
+import logo2 from './logo-2.png'
+import logo3 from './logo-3.png'
 import SocialShare from '../../Utilities/SocialShare/SocialShare';
 
 export default function Home() {
@@ -64,6 +68,7 @@ export default function Home() {
   const [carsAndDriversIndex, setCarsAndDriversIndex] = useState(-1)
   const [ safeRider, setSafeRider ] = useState("")
   const [ timeLeft, setTimeLeft ] = useState("00:00")
+  const [ logo, setLogo ] = useState(logoDefault)
 
   const carsAndDriversScreens = [
     boltApp,
@@ -85,12 +90,16 @@ export default function Home() {
     ],
     [
       {
-        index: 11,
+        index: 8,
         required: true
       },
       {
-        index: 12,
+        index: 9,
         required: true
+      },
+      {
+        index: 10,
+        required: false
       }
     ],
     [
@@ -109,15 +118,11 @@ export default function Home() {
     ],
     [
       {
-        index: 8,
+        index: 0,
         required: true
       },
       {
-        index: 9,
-        required: true
-      },
-      {
-        index: 10,
+        index: 1,
         required: false
       }
     ]
@@ -161,6 +166,7 @@ export default function Home() {
     if (required.some(item => selected.indexOf(item) === -1)) {
       message = "Always get in the right car by confirming your driver's number plate and face in your app immediately your request is accepted"
     }
+    setLogo(logo2)
     postQuestion(message, "SECOND")
   }
 
@@ -193,6 +199,7 @@ export default function Home() {
     if(answer !== ANSWERS.fourth) {
       message = "All Bolt rides are tracked and saved so that we know where your ride was at every point of the trip"
     }
+    setLogo(logo3)
     postQuestion(message, "FIFTH")
   }
 
@@ -236,6 +243,7 @@ export default function Home() {
 
   const submitFinal = (e) => {
     e.preventDefault()
+    setLogo(logoDefault)
     endGame("Congratulations, you're a safe rider!")
     return
   }
@@ -471,32 +479,17 @@ export default function Home() {
   const Landing = () => (
     <Layout textCenter>
       <div className="row text-left">
-        <div className="col-4 landing-col">
-          <div>
-            <img src={verified} className="img-fluid img-round landing-img" alt="" />
-            <div className="landing-text">
-              <span className="landing-label">Verified</span>
-              <h1 className="landing-h1 font-weight-bold">BEFORE</h1>
-            </div>
-          </div>
+        <div className="col-12">
+          <h2 className="text-center primary-text">Driven by Safety</h2>
         </div>
         <div className="col-4 landing-col">
-          <div>
-            <img src={secure} className="img-fluid img-round landing-img" alt="" />
-            <div className="landing-text">
-              <span className="landing-label">Secure</span>
-              <h1 className="landing-h1 font-weight-bold">DURING</h1>
-            </div>
-          </div>
+            <img src={before} className="img-fluid landing-img" alt="" />
         </div>
         <div className="col-4 landing-col">
-          <div>
-            <img src={supported} className="img-fluid img-round landing-img" alt="" />
-            <div className="">
-              <span className="landing-label">Supported</span>
-              <h1 className="landing-h1 font-weight-bold">AFTER</h1>
-            </div>
-          </div>
+            <img src={during} className="img-fluid landing-img" alt="" />
+        </div>
+        <div className="col-4 landing-col">
+            <img src={after} className="img-fluid landing-img" alt="" />
         </div>
       </div>
       <p>
@@ -507,7 +500,7 @@ export default function Home() {
         advantage of all our safety features by solving as many
         CAPTCHAs as possible?
       </p>
-      <button className="btn btn-primary" onClick={(e) => {setCarsAndDriversIndex(Math.floor(Math.random() * Math.floor(3))); setTime((new Date()).getTime() + (8 * 60000)); setStatus("FIRST"); setStarted(true)}}>Get started</button>
+      <button className="btn btn-primary" onClick={(e) => {setCarsAndDriversIndex(Math.floor(Math.random() * Math.floor(3))); setLogo(logo1); setTime((new Date()).getTime() + (8 * 60000)); setStatus("FIRST"); setStarted(true)}}>Get started</button>
       &nbsp;&nbsp;
       <button className="btn btn-primary" onClick={(e) => setStatus("LEADERBOARD")}>View Leaderboard</button>
     </Layout>
@@ -531,7 +524,7 @@ export default function Home() {
           <p>Click all boxes that have your driver and their car.</p>
           <p>Look out for your driver's face and the plate number</p>
           <form onSubmit={submitCarAndDriver}>
-            <div className="row no-gutters">
+            <div className="row no-gutters driver-captcha--holder">
             {
               CARS_DRIVERS.map((car, key) => (
                 <div key={key} className="col-3">
@@ -543,9 +536,9 @@ export default function Home() {
                 </div>
               ))
             }
-              <div className="col-12 mt-3 text-center">
-                <button className="btn btn-primary" type="submit">Submit</button>
-              </div>
+            </div>
+            <div className="col-12 mt-3 text-center">
+              <button className="btn btn-primary" type="submit">Submit</button>
             </div>
           </form>
         </div>
@@ -701,7 +694,7 @@ export default function Home() {
       <div className="my-3 d-flex">
         <h1 className="question-number">{questionNumber}</h1>
         <h1 className="question-text">
-          You’re on your way to your destination.
+          Your trip has ended.
         </h1>
       </div>
 
@@ -902,10 +895,6 @@ export default function Home() {
         <div className="text">
           I'm a safe rider
         </div>
-        <div className="logo">
-          <img alt="" src="https://forum.nox.tv/core/index.php?media/9-recaptcha-png/"/>
-          
-        </div>
       </div>
       <div className="col-12 mt-3 text-center">
         <button className="btn btn-primary" type="submit">Submit</button>
@@ -997,7 +986,7 @@ export default function Home() {
 
   return (
     <>
-      <Header>
+      <Header logo={logo}>
         {started &&
           <Timer date={time} onEnd={() => endGame("Time's up!")} />
         }

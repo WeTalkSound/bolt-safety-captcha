@@ -1,7 +1,6 @@
 import React from 'react'
-import logo from './header-logo.png'
 
-export default function Header({children}) {
+export default function Header({children, logo}) {
   return (
     <div style={{background:'#fff', padding: '15px'}} className="fixed-top text-center justify-content-center">
       <div className="container">
