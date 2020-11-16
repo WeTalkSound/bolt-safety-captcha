@@ -469,7 +469,7 @@ export default function Home() {
       }
     >
       <div className="row">
-        <div  className={`col-12 ${props.animate || props.animate === null ? "animate__animated animate__fadeIn animate__slow" : ""}`}>
+        <div  className={`col-12 ${props.animate || props.animate === undefined ? "animate__animated animate__fadeIn animate__slow" : ""}`}>
           {children}
         </div>
       </div>
