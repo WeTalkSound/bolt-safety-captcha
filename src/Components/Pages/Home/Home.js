@@ -860,7 +860,7 @@ export default function Home() {
           </div>
           <div className="form-group form-check">
             <input type="checkbox" className="form-check-input" id="accept" required />
-            <label className="form-check-label" htmlFor="accept">By ticking this box, I agree that Bolt can contact me regarding the results of this quiz.</label>
+            <label className="form-check-label" htmlFor="accept">By ticking this box, I agree that my personal data provided in this form will be used in order to contact me regarding the results of this quiz</label>
           </div>
           <div className="col-12">
             <button className="btn btn-primary" type="submit">Submit</button>
