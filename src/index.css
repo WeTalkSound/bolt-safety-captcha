@@ -59,6 +59,7 @@ a:hover a:active {
 
 .landing-col {
   display: flex;
+  align-items: flex-end;
   justify-content: center;
   margin-top: 1em;
   margin-bottom: 1em;
