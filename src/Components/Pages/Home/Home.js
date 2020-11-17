@@ -481,10 +481,6 @@ export default function Home() {
     return null;
   }
 
-  function eraseCookie(name) {
-    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-  }
-
   const acceptCookies = () => {
     setCookie('bolt-accept-cookies', true, 7);
   }
