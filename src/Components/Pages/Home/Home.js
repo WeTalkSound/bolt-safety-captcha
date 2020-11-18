@@ -29,6 +29,7 @@ import danger from './sos/danger.png'
 import music from './sos/music.png'
 import price from './sos/price.png'
 import traffic from './sos/traffic.png'
+import medical from './sos/medical.png'
 import insuranceImage from './insurance-image.png'
 import Leaderboard from './Leaderboard';
 import Timer from './Timer';
@@ -303,7 +304,7 @@ export default function Home() {
   const ANSWERS = {
     carAndDriver: carsAndDriversAnswers[carsAndDriversIndex],
     unscrambled: "SHARE RIDE INFO",
-    SOS: [0,1],
+    SOS: [0,1,5],
     fourth: 0,
     fifth: 4,
     feedbackOrder: [
@@ -340,7 +341,8 @@ export default function Home() {
     danger,
     music,
     price,
-    traffic
+    traffic,
+    medical
   ]
 
   const FOURTH_OPTIONS = [
