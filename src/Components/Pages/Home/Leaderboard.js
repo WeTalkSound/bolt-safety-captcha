@@ -11,7 +11,7 @@ export default class Leaderboard extends Component {
 
     componentDidMount() {
         console.log("Showing Scores")
-        fetch(`https://us-central1-bolt-campaigns.cloudfunctions.net/boltCaptchaFilterHighScores?limit=${this.props.limit}&country=${this.props.country}`, {
+        fetch(`https://bolt-campaigns.firebaseio.com/bolt-safety-captcha/high-scores.json?orderBy=%22country%22&endAt=%22${this.props.country}%22&limitToLast=${this.props.limit}`, {
             method: 'GET'
         })
             .then(res => res.json())
@@ -22,7 +22,7 @@ export default class Leaderboard extends Component {
                 this.setState({ scores, error: "" })
             })
             .catch(error => {
-              fetch(`https://us-central1-bolt-campaigns.cloudfunctions.net/boltCaptchaAlsoFilterHighScores?limit=${this.props.limit}&country=${this.props.country}`, {
+              fetch(`https://us-central1-bolt-campaigns.cloudfunctions.net/boltCaptchaFilterHighScores?limit=${this.props.limit}&country=${this.props.country}`, {
                   method: 'GET'
               })
                   .then(res => res.json())
@@ -32,7 +32,19 @@ export default class Leaderboard extends Component {
                       scores = Object.values(scores).sort((a,b) => (a.score < b.score) ? 1: -1)
                       this.setState({ scores, error: "" })
                   })
-            })
+                  .catch(error => {
+                    fetch(`https://us-central1-bolt-campaigns.cloudfunctions.net/boltCaptchaAlsoFilterHighScores?limit=${this.props.limit}&country=${this.props.country}`, {
+                        method: 'GET'
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log(data)
+                            let scores = data
+                            scores = Object.values(scores).sort((a,b) => (a.score < b.score) ? 1: -1)
+                            this.setState({ scores, error: "" })
+                        })
+                  })
+                })
     }
     render() {
         const error = <div className="col-12">{this.state.error}</div>
