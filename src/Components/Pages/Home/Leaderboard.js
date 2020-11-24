@@ -21,7 +21,18 @@ export default class Leaderboard extends Component {
                 scores = Object.values(scores).sort((a,b) => (a.score < b.score) ? 1: -1)
                 this.setState({ scores, error: "" })
             })
-            // .catch(error => this.setState({ error: "There was an error fetching high scores. Please try again." }))
+            .catch(error => {
+              fetch(`https://us-central1-bolt-campaigns.cloudfunctions.net/boltCaptchaAlsoFilterHighScores?limit=${this.props.limit}&country=${this.props.country}`, {
+                  method: 'GET'
+              })
+                  .then(res => res.json())
+                  .then(data => {
+                      console.log(data)
+                      let scores = data
+                      scores = Object.values(scores).sort((a,b) => (a.score < b.score) ? 1: -1)
+                      this.setState({ scores, error: "" })
+                  })
+            })
     }
     render() {
         const error = <div className="col-12">{this.state.error}</div>
